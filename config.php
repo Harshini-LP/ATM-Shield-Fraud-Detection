@@ -4,12 +4,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Cloud Database credentials (Unge cloud console-il kidaikkum details-ai paste seiyunggal)
-$db_host = "PASTE_YOUR_CLOUD_HOST_HERE";     // e.g., ://stackhero-network.com or aivencloud.com
-$db_user = "PASTE_YOUR_CLOUD_USER_HERE";     // e.g., root or unique username
-$db_pass = "PASTE_YOUR_CLOUD_PASSWORD_HERE"; // Long secret secure string password
-$db_name = "PASTE_YOUR_CLOUD_DB_NAME_HERE";  // Cloud database name (e.g., atm_fraud)
-$db_port = 3306;                             // Standard cloud port is usually 3306
+// 2. Real Production Cloud Database Credentials (Clever Cloud Cluster Settings)
+$db_host = "br1fwj2kwymbxjsqxrtc-mysql.services.clever-cloud.com";
+$db_user = "ulecruaargmbi6md";
+$db_pass = "W1P8T3MHcAknbSaQlZWC";
+$db_name = "br1fwj2kwymbxjsqxrtc";
+$db_port = 3306;
 
 // 3. Connect to the remote cloud server framework
 $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
