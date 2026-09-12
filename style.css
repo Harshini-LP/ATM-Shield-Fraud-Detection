@@ -73,3 +73,29 @@ button:hover {
     border-radius: 6px;
     margin-bottom: 15px;
 }
+
+/* ==========================================================================
+   📱 MOBILE RESPONSIVE ENGINE (Adds seamless layout scaling for small screens)
+   ========================================================================== */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 15px;
+        align-items: flex-start; /* Prevents long layout screens getting cut off at the top on small displays */
+        padding-top: 30px;
+    }
+
+    .container {
+        padding: 20px; /* Reduces extra margins to fit mobile edges properly */
+        border-radius: 10px;
+    }
+
+    input[type="text"], input[type="password"], input[type="number"] {
+        padding: 14px; /* Increases tap target sizes slightly for mobile thumbs */
+        font-size: 16px !important; /* Prevents auto-zoom scaling issues on mobile Safari browsers */
+    }
+
+    button {
+        padding: 14px;
+        font-size: 16px;
+    }
+}
