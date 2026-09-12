@@ -38,7 +38,7 @@ if (isset($_POST['verify_otp_btn'])) {
             mysqli_stmt_close($update_stmt);
 
             // 3. Log the successful transaction history record (FIX: Removed the 📍 emoji)
-            $loc_string = "[LOC] " . $location . " (OTP Verified)";
+            $loc_string = "[LOCATION] " . $location . " (OTP Verified)";
             $status_success = "Success";
             $log_stmt = mysqli_prepare($conn, "INSERT INTO transactions (card_number, amount, location, status) VALUES (?, ?, ?, ?)");
             mysqli_stmt_bind_param($log_stmt, "sdss", $card, $amount, $loc_string, $status_success);
