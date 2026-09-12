@@ -1,5 +1,8 @@
 # 🛡️ ATM Shield - Real-Time Fraud Detection System
 
+<!-- STEP 2 IMPLEMENTATION: Repository top presentation banner asset mapping -->
+![ATM Shield Fraud Detection Banner](banner.png)
+
 **ATM Shield** is a high-security automated banking simulation ecosystem engineered using a native **PHP** and **MariaDB/MySQL** stack. It implements critical application runtime security measures alongside real-time transaction monitoring matrices to prevent malicious account compromise and card spoofing vectors.
 
 ---
@@ -26,23 +29,28 @@ This software leverages four layered detection algorithms to actively inspect tr
 
 ## 🛠️ Application Tech Stack
 
-* **Server Environment:** Apache Server (Hosted via local local development suites such as WampServer / XAMPP)
-* **Programming Scripting Layer:** PHP 8.x
-* **Database Ledger Management:** MariaDB / MySQL (Operating on default configuration Port **`3307`**)
+* **Server Cloud Environment:** Docker Container Engine deployed via **Render Cloud Services**
+* **Programming Scripting Layer:** PHP 8.2 Runtime Environment
+* **Database Ledger Management:** Remote **Clever Cloud MySQL Service Cluster** (Port `3306`)
+* **Local Development Stack:** Apache Server Suite (WampServer / XAMPP on default local port `3307`)
 * **UI Skin Theme Layer:** Responsive Minimalist Cyber-Dark Aesthetic Template (`style.css`)
 
 ---
 
 ## 📋 Comprehensive Repository Directory Blueprint
 
-* `config.php` – Primary orchestration center initializing database architectures, verifying active columns, and housing port constraints.
-* `index.php` – The main card authentication landing gate equipped with a hidden back-door entryway element for network administrators.
+* `Dockerfile` – Container orchestration profile engine automating environment dependencies configuration layers.
+* `banner.png` – Repository presentation graphic layer template blueprint asset.
+* `logo.png` – Geometric core visual brand marker asset centered inside application landing view gates.
+* `fraud-alert.png` – High-risk threat indicator visualization asset mapping user authorization failure thresholds.
+* `config.php` – Primary orchestration center initializing database architectures, verifying active columns, and housing cloud network connection strings.
+* `index.php` – The main card authentication landing gate integrated with a custom centered corporate brand logo image layout.
 * `register.php` – Form system mapping client usernames to distinct 16-digit card networks with background crypt-hashing engines.
 * `dashboard.php` – Core client summary portal that intercepts real-time admin alert payloads.
 * `withdraw.php` – Primary execution module where velocity metrics, IP geolocation trackers, and limit boundaries are calculated.
 * `verify_otp.php` – 6-digit transaction confirmation guard that isolates suspicious operations.
 * `tx_success.php` – Standalone dynamic receipt canvas featuring an animated green confirmation summary.
-* `otp_failed.php` – Visual red threat alert flag indicator indicating bad authentication input parameters.
+* `otp_failed.php` – Visual red threat alert flag dashboard tracking verification code failure exceptions.
 * `admin_login.php` – Encrypted login portal managing administrative entry protocols.
 * `admin.php` – Central control panel where admins can audit active fraud files, **unlock locked client cards**, and trigger **Delete & Report actions**.
 * `logout.php` – Security module that invalidates all active session keys on the web server.
