@@ -18,6 +18,9 @@ if (!$conn) {
     die("Database Connection Failed: " . mysqli_connect_error());
 }
 
+// 🔥 CRITICAL PROTECTION PATCH: Force structural link parameters to read modern 4-byte UTF-8 emoji strings
+mysqli_set_charset($conn, "utf8mb4");
+
 // 4. Create/Align tables matching your live structure columns
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
