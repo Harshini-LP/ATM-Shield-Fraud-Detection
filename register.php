@@ -66,6 +66,10 @@ if (isset($_POST['register'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <!-- 🔥 MOBILE RESPONSIVE SCALING ENGINE TRIGGER INTERFACES -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ 
     <title>ATM Shield - Register</title>
     <link rel="stylesheet" href="style.css">
 </head>
