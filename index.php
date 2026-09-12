@@ -72,7 +72,7 @@ if (isset($_POST['login'])) {
 <body>
     <div class="container">
         <!-- App Logo -->
-        <img src="images/logo.png" alt="Logo" style="width: 100px; height: auto; margin-bottom: 10px;">
+        <img src="logo.png" alt="Logo" style="width: 100px; height: auto; margin-bottom: 10px;">
         
         <h2>🛡️ ATM Shield</h2>
         <p style="color:#94a3b8; font-size:14px; margin-bottom:15px;">Real-Time Protection Enabled</p>
