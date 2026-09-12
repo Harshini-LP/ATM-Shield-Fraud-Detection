@@ -54,8 +54,12 @@ if (isset($_POST['verify_otp_btn'])) {
         unset($_SESSION['pending_amount']);
         unset($_SESSION['pending_location']);
 
-        echo "<script>alert('OTP Verified! Transaction Success.'); window.location.href='tx_success.php';</script>";
+        // 🔥 FIXED PRODUCTION ROUTING LAYER: Automatically detects if running on Local or Online Render Root
+        $redirect_path = ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') ? 'tx_success.php' : '/tx_success.php';
+
+        echo "<script>alert('OTP Verified! Transaction Success.'); window.location.href='" . $redirect_path . "';</script>";
         exit();
+
         
     } else {
         // ----------------------------------------------------
