@@ -37,8 +37,8 @@ if (isset($_POST['verify_otp_btn'])) {
             mysqli_stmt_execute($update_stmt);
             mysqli_stmt_close($update_stmt);
 
-            // 3. Log the successful transaction history record
-            $loc_string = "📍 " . $location . " (OTP Verified)";
+            // 3. Log the successful transaction history record (FIX: Removed the 📍 emoji)
+            $loc_string = "[LOC] " . $location . " (OTP Verified)";
             $status_success = "Success";
             $log_stmt = mysqli_prepare($conn, "INSERT INTO transactions (card_number, amount, location, status) VALUES (?, ?, ?, ?)");
             mysqli_stmt_bind_param($log_stmt, "sdss", $card, $amount, $loc_string, $status_success);
@@ -54,7 +54,6 @@ if (isset($_POST['verify_otp_btn'])) {
         unset($_SESSION['pending_amount']);
         unset($_SESSION['pending_location']);
 
-        // FIX: Redirect updated smoothly from dashboard.php to tx_success.php
         echo "<script>alert('OTP Verified! Transaction Success.'); window.location.href='tx_success.php';</script>";
         exit();
         
@@ -65,8 +64,8 @@ if (isset($_POST['verify_otp_btn'])) {
         $amount = $_SESSION['pending_amount'];
         $location = $_SESSION['pending_location'];
 
-        // Log the failure to the transaction monitoring matrix securely
-        $loc_fail_string = "📍 " . $location . " (Failed OTP)";
+        // Log the failure to the transaction monitoring matrix securely (FIX: Removed the 📍 emoji)
+        $loc_fail_string = "[LOC] " . $location . " (Failed OTP)";
         $status_fraud = "Flagged Fraud";
         
         $fraud_stmt = mysqli_prepare($conn, "INSERT INTO transactions (card_number, amount, location, status) VALUES (?, ?, ?, ?)");
