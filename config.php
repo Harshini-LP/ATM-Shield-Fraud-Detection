@@ -18,22 +18,14 @@ if (!$conn) {
     die("Database Connection Failed: " . mysqli_connect_error());
 }
 
-// ---- DO NOT CHANGE CODES BEYOND THIS POINT ----
-// The table auto-generations layer script logic below will execute on your cloud ledger automatically
-
-mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-...
-
-
-// 5. Create/Align tables matching your live structure columns
+// 4. Create/Align tables matching your live structure columns
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50),
     password VARCHAR(255) NOT NULL, 
     card_number VARCHAR(50) NOT NULL,
     balance DECIMAL(10,2) DEFAULT 50000.00,
-    card_status VARCHAR(50) DEFAULT 'Active', /* FIX: Expanded from VARCHAR(10) to VARCHAR(50) */
+    card_status VARCHAR(50) DEFAULT 'Active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     admin_report VARCHAR(255) DEFAULT NULL
 )");
@@ -69,7 +61,7 @@ mysqli_query($conn, "CREATE TABLE transactions (
     date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
-// 6. Automatically populate sample credentials if table reads completely empty
+// 5. Automatically populate sample credentials if table reads completely empty
 $check_user = mysqli_query($conn, "SELECT * FROM users LIMIT 1");
 if (mysqli_num_rows($check_user) == 0) {
     $dummy_pin_hash = password_hash('1234', PASSWORD_BCRYPT);
