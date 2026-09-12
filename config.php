@@ -1,19 +1,30 @@
 <?php
-// 1. செஷனை கோப்பின் தொடக்கத்திலேயே தொடங்க வேண்டும் (Headers error வராமல் தடுக்க சிறந்த முறை)
-session_start();
-
-// 2. Connect to local server using port 3307 as detected in your phpMyAdmin panel
-$conn = mysqli_connect("localhost", "root", "", "", 3307);
-
-if (!$conn) {
-    die("Connection Failed: " . mysqli_connect_error());
+// 1. Start session safely
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-// 3. Automated Script: Selects or creates your active database 'atm_fraud'
-mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS atm_fraud");
+// 2. Cloud Database credentials (Unge cloud console-il kidaikkum details-ai paste seiyunggal)
+$db_host = "PASTE_YOUR_CLOUD_HOST_HERE";     // e.g., ://stackhero-network.com or aivencloud.com
+$db_user = "PASTE_YOUR_CLOUD_USER_HERE";     // e.g., root or unique username
+$db_pass = "PASTE_YOUR_CLOUD_PASSWORD_HERE"; // Long secret secure string password
+$db_name = "PASTE_YOUR_CLOUD_DB_NAME_HERE";  // Cloud database name (e.g., atm_fraud)
+$db_port = 3306;                             // Standard cloud port is usually 3306
 
-// 4. Select the active database
-mysqli_select_db($conn, "atm_fraud");
+// 3. Connect to the remote cloud server framework
+$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
+
+if (!$conn) {
+    die("Database Connection Failed: " . mysqli_connect_error());
+}
+
+// ---- DO NOT CHANGE CODES BEYOND THIS POINT ----
+// The table auto-generations layer script logic below will execute on your cloud ledger automatically
+
+mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+...
+
 
 // 5. Create/Align tables matching your live structure columns
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
