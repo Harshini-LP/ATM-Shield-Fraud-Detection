@@ -15,7 +15,7 @@ if(!isset($_SESSION['user_card'])) {
 <body>
     <div class="container" style="max-width: 500px;">
         <!-- Fraud Alert Vector Illustration Banner Display Layer -->
-        <img src='images/fraud-alert.png' alt='Fraud Alert' style='width: 100%; border-radius: 8px; margin-bottom: 15px;'>
+        <img src='fraud-alert.png' alt='Fraud Alert' style='width: 100%; border-radius: 8px; margin-bottom: 15px;'>
         
         <h2 style='color:#ef4444;'>Transaction Denied! ❌</h2>
         <p style='color:#94a3b8; margin-bottom:15px;'>Reason: Incorrect OTP entered for suspicious high-value or out-station activity. Transaction terminated for your account's safety.</p>
