@@ -68,7 +68,7 @@ if (isset($_POST['verify_otp_btn'])) {
         $amount = $_SESSION['pending_amount'];
         $location = $_SESSION['pending_location'];
 
-        // Log the failure to the transaction monitoring matrix securely (FIX: Removed the 📍 emoji)
+        // Log the failure to the transaction monitoring matrix securely
         $loc_fail_string = "[LOC] " . $location . " (Failed OTP)";
         $status_fraud = "Flagged Fraud";
         
@@ -81,9 +81,13 @@ if (isset($_POST['verify_otp_btn'])) {
         unset($_SESSION['pending_amount']);
         unset($_SESSION['pending_location']);
         
-        header("Location: otp_failed.php");
+        // 🔥 FIXED PRODUCTION FAILURE ROUTING LAYER: Automatically maps local subfolders vs Render root paths
+        $fail_redirect = ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') ? 'otp_failed.php' : '/otp_failed.php';
+        
+        header("Location: " . $fail_redirect);
         exit();
     }
+
 }
 ?>
 
