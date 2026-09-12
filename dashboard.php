@@ -70,7 +70,7 @@ if (!$user) {
 </head>
 <body>
     <div class="container" style="max-width: 500px;">
-        <img src="images/banner.png" alt="ATM Security" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+        <img src="banner.png" alt="ATM Security" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
 
        
 
