@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Real Production Cloud Database Credentials (Clever Cloud Settings)
-$db_host = "://clever-cloud.com";
+// 2. Real Production Cloud Database Credentials (FIXED Host String Connection Parameters)
+$db_host = "br1fwj2kwymbxjsqxrtc-mysql.services.clever-cloud.com";
 $db_user = "ulecruaargmbi6md";
 $db_pass = "W1P8T3MHcAknbSaQlZWC";
 $db_name = "br1fwj2kwymbxjsqxrtc";
