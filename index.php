@@ -1,64 +1,67 @@
 <?php
 include 'config.php';
-
-if (isset($_POST['login'])) {
-    // Trim accidental leading/trailing spaces
-    $card = trim($_POST['card_number']);
-    $pin = trim($_POST['pin']);
-
-    // 1. Safe Prepared Statement: Check account using your live column names (card_status, password)
-    $status_stmt = mysqli_prepare($conn, "SELECT card_status, password FROM users WHERE card_number = ?");
-    mysqli_stmt_bind_param($status_stmt, "s", $card);
-    mysqli_stmt_execute($status_stmt);
-    $status_res = mysqli_stmt_get_result($status_stmt);
-    $user_data = mysqli_fetch_assoc($status_res);
-    mysqli_stmt_close($status_stmt);
-
-    if ($user_data && $user_data['card_status'] == 'Locked') {
-        echo "<script>alert('Your account is LOCKED due to 3 failed attempts!');</script>";
+alert('Your account is LOCKED due to 3 failed attempts!');";
     } elseif ($user_data) {
-        // 2. Cryptographic Match: Verify plaintext PIN against database password hash column
-        if (password_verify($pin, $user_data['password'])) {
-            
-            // Login Success: Clear failed logs
-            $clear_stmt = mysqli_prepare($conn, "DELETE FROM login_attempts WHERE card_number = ?");
-            mysqli_stmt_bind_param($clear_stmt, "s", $card);
-            mysqli_stmt_execute($clear_stmt);
-            mysqli_stmt_close($clear_stmt);
+        // 2. Check 2-Minute Rapid Login/Transaction Limit
+        \(time_stmt = mysqli_prepare(\)conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL");
+        mysqli_stmt_bind_param(\(time_stmt, "s",\)card);
+        mysqli_stmt_execute($time_stmt);
+        \(time_res = mysqli_stmt_get_result(\)time_stmt);
+        \(time_data = mysqli_fetch_assoc(\)time_res);
+        mysqli_stmt_close($time_stmt);
 
-            $_SESSION['user_card'] = $card;
-            header("Location: dashboard.php");
-            exit();
+        // User "Yes, I am in" அழுத்தாமல் 120 வினாடிக்குள் மீண்டும் வந்தால் Pop-up காட்டும்
+        if (\(time_data &&\)time_data['diff'] < 120 && !isset($_POST['user_verified'])) {
+            $show_verification_popup = true;
+            \(pending_card =\)card;
+            \(pending_pin =\)pin;
         } else {
-            // Login Failed (Wrong PIN): Log attempt
-            $log_stmt = mysqli_prepare($conn, "INSERT INTO login_attempts (card_number) VALUES (?)");
-            mysqli_stmt_bind_param($log_stmt, "s", $card);
-            mysqli_stmt_execute($log_stmt);
-            mysqli_stmt_close($log_stmt);
+            // PIN Verification
+            if (password_verify(\(pin,\)user_data['password'])) {
+                
+                // Update Last Login Time & Reset Failed Logins
+                \(update_stmt = mysqli_prepare(\)conn, "UPDATE users SET last_login = NOW() WHERE card_number = ?");
+                mysqli_stmt_bind_param(\(update_stmt, "s",\)card);
+                mysqli_stmt_execute($update_stmt);
+                mysqli_stmt_close($update_stmt);
 
-            // Fetch the aggregated total of failed validation attempts
-            $count_stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM login_attempts WHERE card_number = ?");
-            mysqli_stmt_bind_param($count_stmt, "s", $card);
-            mysqli_stmt_execute($count_stmt);
-            $count_res = mysqli_stmt_get_result($count_stmt);
-            $count_data = mysqli_fetch_assoc($count_res);
-            mysqli_stmt_close($count_stmt);
+                \(clear_stmt = mysqli_prepare(\)conn, "DELETE FROM login_attempts WHERE card_number = ?");
+                mysqli_stmt_bind_param(\(clear_stmt, "s",\)card);
+                mysqli_stmt_execute($clear_stmt);
+                mysqli_stmt_close($clear_stmt);
 
-            // 3. Security Rule: Lock account after 3 continuous failures
-            if ($count_data['total'] >= 3) {
-                $lock_stmt = mysqli_prepare($conn, "UPDATE users SET card_status = 'Locked' WHERE card_number = ?");
-                mysqli_stmt_bind_param($lock_stmt, "s", $card);
-                mysqli_stmt_execute($lock_stmt);
-                mysqli_stmt_close($lock_stmt);
-
-                echo "<script>alert('Fraud Alert! Account Locked after 3 wrong tries.');</script>";
+                \(_SESSION['user_card'] =\)card;
+                header("Location: dashboard.php");
+                exit();
             } else {
-                $rem = 3 - $count_data['total'];
-                echo "<script>alert('Wrong PIN! Remaining attempts: $rem');</script>";
+                // Wrong PIN Logic
+                \(log_stmt = mysqli_prepare(\)conn, "INSERT INTO login_attempts (card_number) VALUES (?)");
+                mysqli_stmt_bind_param(\(log_stmt, "s",\)card);
+                mysqli_stmt_execute($log_stmt);
+                mysqli_stmt_close($log_stmt);
+
+                \(count_stmt = mysqli_prepare(\)conn, "SELECT COUNT(*) as total FROM login_attempts WHERE card_number = ?");
+                mysqli_stmt_bind_param(\(count_stmt, "s",\)card);
+                mysqli_stmt_execute($count_stmt);
+                \(count_res = mysqli_stmt_get_result(\)count_stmt);
+                \(count_data = mysqli_fetch_assoc(\)count_res);
+                mysqli_stmt_close($count_stmt);
+
+                if ($count_data['total'] >= 3) {
+                    \(lock_stmt = mysqli_prepare(\)conn, "UPDATE users SET card_status = 'Locked' WHERE card_number = ?");
+                    mysqli_stmt_bind_param(\(lock_stmt, "s",\)card);
+                    mysqli_stmt_execute($lock_stmt);
+                    mysqli_stmt_close($lock_stmt);
+
+                    echo "";
+                } else {
+                    \(rem = 3 -\)count_data['total'];
+                    echo "";
+                }
             }
         }
     } else {
-        echo "<script>alert('Invalid Card Number or Card not found!');</script>";
+        echo "";
     }
 }
 ?>
