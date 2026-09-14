@@ -4,7 +4,6 @@ if(isset($_POST['login']))
 {
 alert('Your account is LOCKED due to 3 failed attempts!');";
     } elseif ($user_data) {
-
         // 2. Check 2-Minute Rapid Login/Transaction Limit
         \(time_stmt = mysqli_prepare(\)conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL");
         mysqli_stmt_bind_param(\(time_stmt, "s",\)card);
