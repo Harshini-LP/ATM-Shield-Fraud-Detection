@@ -85,7 +85,7 @@ if (isset($_POST['login'])) {
                    maxlength="30" title="Please enter your card number exactly as registered">
             <input type="password" name="pin" placeholder="🔑 Enter 4 Digit PIN" required 
                    maxlength="4" minlength="4" pattern="[0-9]{4}" title="Please enter exactly 4 numbers">
-            <button type="submit" name="login">Insert Card & Login</button>
+            <button type="submit" name="login">Login</button>
         </form>
 
         <br>
