@@ -4,13 +4,14 @@ if(isset($_POST['login']))
 {
 alert('Your account is LOCKED due to 3 failed attempts!');";
     } elseif ($user_data) {
-        // 2. Check 2-Minute Rapid Login/Transaction Limit
+       // 2. Check 2-Minute Rapid Login/Transaction Limit
         \(time_stmt = mysqli_prepare(\)conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL");
         mysqli_stmt_bind_param(\(time_stmt, "s",\)card);
         mysqli_stmt_execute($time_stmt);
         \(time_res = mysqli_stmt_get_result(\)time_stmt);
         \(time_data = mysqli_fetch_assoc(\)time_res);
         mysqli_stmt_close($time_stmt);
+
 
         // 120 வினாடிக்குள் மீண்டும் வந்தால் Pop-up காட்டும்
         if (\(time_data &&\)time_data['diff'] < 120 && !isset($_POST['user_verified'])) {
