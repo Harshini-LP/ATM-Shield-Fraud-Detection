@@ -17,7 +17,7 @@ if (isset($_POST['admin_login_btn'])) {
         header("Location: admin.php");
         exit();
     } else {
-        $error = "❌ தவறான யூசர்நேம் அல்லது பாஸ்வேர்ட்!";
+        $error = "❌ Wrong Username and Password!";
     }
 }
 ?>
