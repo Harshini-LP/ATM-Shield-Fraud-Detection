@@ -2,6 +2,7 @@
 include 'config.php';
 alert('Your account is LOCKED due to 3 failed attempts!');";
     } elseif ($user_data) {
+
         // 2. Check 2-Minute Rapid Login/Transaction Limit
         \(time_stmt = mysqli_prepare(\)conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL");
         mysqli_stmt_bind_param(\(time_stmt, "s",\)card);
@@ -10,7 +11,7 @@ alert('Your account is LOCKED due to 3 failed attempts!');";
         \(time_data = mysqli_fetch_assoc(\)time_res);
         mysqli_stmt_close($time_stmt);
 
-        // User "Yes, I am in" அழுத்தாமல் 120 வினாடிக்குள் மீண்டும் வந்தால் Pop-up காட்டும்
+        // 120 வினாடிக்குள் மீண்டும் வந்தால் Pop-up காட்டும்
         if (\(time_data &&\)time_data['diff'] < 120 && !isset($_POST['user_verified'])) {
             $show_verification_popup = true;
             \(pending_card =\)card;
@@ -18,13 +19,14 @@ alert('Your account is LOCKED due to 3 failed attempts!');";
         } else {
             // PIN Verification
             if (password_verify(\(pin,\)user_data['password'])) {
-                
-                // Update Last Login Time & Reset Failed Logins
+
+                // Update Last Login Time
                 \(update_stmt = mysqli_prepare(\)conn, "UPDATE users SET last_login = NOW() WHERE card_number = ?");
                 mysqli_stmt_bind_param(\(update_stmt, "s",\)card);
                 mysqli_stmt_execute($update_stmt);
                 mysqli_stmt_close($update_stmt);
 
+                // Clear Failed Logins
                 \(clear_stmt = mysqli_prepare(\)conn, "DELETE FROM login_attempts WHERE card_number = ?");
                 mysqli_stmt_bind_param(\(clear_stmt, "s",\)card);
                 mysqli_stmt_execute($clear_stmt);
