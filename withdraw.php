@@ -76,25 +76,56 @@ if (isset($_POST['withdraw'])) {
             mysqli_stmt_close($vel_stmt);
 
             // உங்களுக்காக மாற்றப்பட்ட புதிய ஜாவாஸ்கிரிப்ட் பாப்-அப் பகுதி 🚨
-            // நேரடியாக பிளாக் செய்யாமல் பயனரிடம் கேள்வி கேட்கும்
+                     // பழைய ஜாவாஸ்கிரிப்ட் பாப்-அப் பகுதிக்கு பதிலாக இதை மாற்றவும்:
             $_SESSION['pending_amount'] = $amount;
             $_SESSION['pending_location'] = $detected_location;
-            $_SESSION['auth_otp'] = rand(100000, 999999); // பாதுகாப்புக்காக புதிய OTP உருவாக்குதல்
+            $_SESSION['auth_otp'] = rand(100000, 999999); 
             
+            // SweetAlert2 லைப்ரரியை இணைத்து பிரத்யேக பாப்-அப்பை உருவாக்குதல்
             echo "
+            <!-- SweetAlert2 CDN Library -->
+            <script src='https://jsdelivr.net'></script>
+            <style>
+                /* உங்கள் ATM Shield தீமிற்கு ஏற்ப Dark Style வடிவமைப்பு */
+                .swal2-popup { background: #1e293b !important; color: #f8fafc !important; font-family: sans-serif; border-radius: 12px; }
+                .swal2-title { color: #f43f5e !important; }
+                .swal2-confirm { background-color: #2563eb !important; padding: 10px 24px !important; font-weight: bold; }
+                .swal2-cancel { background-color: #475569 !important; padding: 10px 24px !important; font-weight: bold; }
+            </style>
             <script>
-                let userChoice = confirm('🚨 Fraud Security Alert:\\nMultiple rapid transactions detected within 2 minutes!\\n\\nIs this really you trying to withdraw money? Click OK (Yes, I am) or Cancel (No).');
-                
-                if (userChoice) {
-                    // பயனர் 'Yes' அழுத்தினால் பாதுகாப்பு அடுக்கிற்கான OTP பக்கத்திற்கு அழைத்துச் செல்லப்படும்
-                    window.location.href = 'verify_otp.php';
-                } else {
-                    // பயனர் 'No' அழுத்தினால் பரிவர்த்தனை முற்றிலும் ரத்து செய்யப்படும்
-                    alert('❌ Transaction canceled for security reasons.');
-                    window.location.href = 'dashboard.php';
-                }
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '🚨 Fraud Security Alert',
+                        text: 'Multiple rapid transactions detected within 2 minutes! Is this really you trying to withdraw money?',
+                        icon: 'warning',
+                        iconColor: '#f43f5e',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, I am',   // உங்களுக்கான பொத்தான் பெயர் மாற்றம் 🆕
+                        cancelButtonText: 'No',          // உங்களுக்கான பொத்தான் பெயர் மாற்றம் 🆕
+                        reverseButtons: true,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // பயனர் 'Yes, I am' அழுத்தினால் OTP பக்கத்திற்குச் செல்லும்
+                            window.location.href = 'verify_otp.php';
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            // பயனர் 'No' அழுத்தினால் டேஷ்போர்டுக்குச் செல்லும்
+                            Swal.fire({
+                                title: 'Canceled',
+                                text: '❌ Transaction canceled for security reasons.',
+                                icon: 'error',
+                                background: '#1e293b',
+                                color: '#f8fafc',
+                                confirmButtonColor: '#2563eb'
+                            }).then(() => {
+                                window.location.href = 'dashboard.php';
+                            });
+                        }
+                    });
+                });
             </script>";
             exit();
+
         }
     }
     mysqli_stmt_close($vel_stmt);
