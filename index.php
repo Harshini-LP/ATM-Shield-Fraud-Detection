@@ -25,22 +25,24 @@ if (isset($_POST['login'])) {
             $column_check = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'last_login'");
             
             if (mysqli_num_rows($column_check) > 0) {
-                // தரவுத்தளத்தில் காலம் இருந்தால் மட்டுமே இந்த குறியீடு இயங்கும்
-                $time_stmt = mysqli_prepare($conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL"); 
-                mysqli_stmt_bind_param($time_stmt, "s", $card); 
-                mysqli_stmt_execute($time_stmt); 
-                $time_res = mysqli_stmt_get_result($time_stmt); 
-                $time_data = mysqli_fetch_assoc($time_res); 
-                mysqli_stmt_close($time_stmt); 
-            } else {
-                // காலம் இல்லாத பட்சத்தில் பிழை வராமல் தவிர்க்க தற்காலிக மதிப்பு வழங்கப்படுகிறது
-                $time_data = ['diff' => 9999];
-            }
-
-            // விரைவான லாகின் முயற்சிகளை சரிபார்த்தல் (120 வினாடிகள்)
+                           // விரைவான லாகின் முயற்சிகளை சரிபார்த்தல் (120 வினாடிகள்)
             if ($time_data && $time_data['diff'] < 120 && !isset($_POST['user_verified'])) { 
-                echo "<script>alert('🕒 Rapid authentication activity detected. Step-Up OTP Verification triggered.'); window.location.href='verify_otp.php?card=" . urlencode($card) . "';</script>";
+                echo "
+                <script>
+                    // பயனர் லாகின் செய்யும் போது 2 நிமிட எச்சரிக்கை பாப்-அப்
+                    let userChoice = confirm('🚨 Security Alert: Multiple rapid authentication attempts detected within 2 minutes!\\n\\nIs this you trying to log in? Click OK (Yes) or Cancel (No).');
+                    
+                    if (userChoice) {
+                        // பயனர் 'Yes' (OK) அழுத்தினால் OTP பக்கத்திற்குச் செல்லும்
+                        window.location.href = 'verify_otp.php?card=" . urlencode($card) . "';
+                    } else {
+                        // பயனர் 'No' (Cancel) அழுத்தினால் லாகின் ரத்து செய்யப்படும்
+                        alert('❌ Session terminated. Security team notified.');
+                        window.location.href = 'index.php';
+                    }
+                </script>";
                 exit();
+            }
             } else {
                 // 5. ஹேஷ் செய்யப்பட்ட பின்னை (PIN) சரிபார்த்தல்
                 if (password_verify($pin, $user_data['password'])) { 
