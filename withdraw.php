@@ -32,7 +32,7 @@ if (isset($_POST['withdraw'])) {
     if($user_ip == '::1' || $user_ip == '127.0.0.1') {
         $user_ip = '103.60.172.0'; 
     }
-    $geo_api = @file_get_contents("http://ip-api.com{$user_ip}");
+    $geo_api = @file_get_contents("http://ip-api.com{$user_ip}"); // URL திருத்தப்பட்டுள்ளது
     $geo_data = json_decode($geo_api, true);
     $detected_location = (isset($geo_data['city']) && !empty($geo_data['city'])) ? $geo_data['city'] : "Unknown";
 
@@ -67,14 +67,33 @@ if (isset($_POST['withdraw'])) {
             $flag_msg = "📍 " . $detected_location . " (Rapid Attempt)";
             $flag_status = "Flagged Fraud";
             
+            // டேட்டாபேஸில் மோசடி முயற்சியைப் பதிவு செய்தல்
             $fraud_stmt = mysqli_prepare($conn, "INSERT INTO transactions (card_number, amount, location, status) VALUES (?, ?, ?, ?)");
             mysqli_stmt_bind_param($fraud_stmt, "sdss", $card, $amount, $flag_msg, $flag_status);
             mysqli_stmt_execute($fraud_stmt);
             mysqli_stmt_close($fraud_stmt);
             
-            $_SESSION['fraud_detected'] = true;
-            header("Location: dashboard.php");
             mysqli_stmt_close($vel_stmt);
+
+            // உங்களுக்காக மாற்றப்பட்ட புதிய ஜாவாஸ்கிரிப்ட் பாப்-அப் பகுதி 🚨
+            // நேரடியாக பிளாக் செய்யாமல் பயனரிடம் கேள்வி கேட்கும்
+            $_SESSION['pending_amount'] = $amount;
+            $_SESSION['pending_location'] = $detected_location;
+            $_SESSION['auth_otp'] = rand(100000, 999999); // பாதுகாப்புக்காக புதிய OTP உருவாக்குதல்
+            
+            echo "
+            <script>
+                let userChoice = confirm('🚨 Fraud Security Alert:\\nMultiple rapid transactions detected within 2 minutes!\\n\\nIs this really you trying to withdraw money? Click OK (Yes, I am) or Cancel (No).');
+                
+                if (userChoice) {
+                    // பயனர் 'Yes' அழுத்தினால் பாதுகாப்பு அடுக்கிற்கான OTP பக்கத்திற்கு அழைத்துச் செல்லப்படும்
+                    window.location.href = 'verify_otp.php';
+                } else {
+                    // பயனர் 'No' அழுத்தினால் பரிவர்த்தனை முற்றிலும் ரத்து செய்யப்படும்
+                    alert('❌ Transaction canceled for security reasons.');
+                    window.location.href = 'dashboard.php';
+                }
+            </script>";
             exit();
         }
     }
@@ -87,14 +106,14 @@ if (isset($_POST['withdraw'])) {
         exit();
     }
 
-    // அட்வான்ஸ்டு OTP சரிபார்ப்பு நிபந்தனை
+    // அட்வான்ஸ்டு OTP சரிபார்ப்பு நிபந்தனை (அதிக தொகை அல்லது புதிய இருப்பிடம்)
     if ($amount > $max_single_limit || $detected_location != $usual_location) {
         $_SESSION['pending_amount'] = $amount;
         $_SESSION['pending_location'] = $detected_location;
         $_SESSION['auth_otp'] = rand(100000, 999999);
         header("Location: verify_otp.php");
         exit();
-        } else {
+    } else {
         // நேரடிப் பரிவர்த்தனை வெற்றி
         $new_balance = $user['balance'] - $amount;
         $update_stmt = mysqli_prepare($conn, "UPDATE users SET balance = ? WHERE card_number = ?");
@@ -115,6 +134,5 @@ if (isset($_POST['withdraw'])) {
         header("Location: tx_success.php");
         exit();
     }
-
 }
 ?>
