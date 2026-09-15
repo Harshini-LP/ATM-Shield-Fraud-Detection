@@ -22,6 +22,7 @@ if (isset($_POST['login'])) {
             $error_msg = "❌ Your account is LOCKED due to 3 failed attempts! Contact admin.";
         } else {
             // 4. Time-Based Transaction Velocity Check
+            // Old Line 25 causing the crash:
             $time_stmt = mysqli_prepare($conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL"); 
             mysqli_stmt_bind_param($time_stmt, "s", $card); 
             mysqli_stmt_execute($time_stmt); 
