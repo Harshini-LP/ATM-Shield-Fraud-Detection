@@ -21,14 +21,21 @@ if (isset($_POST['login'])) {
         if ($user_data['card_status'] === 'Locked') {
             $error_msg = "❌ Your account is LOCKED due to 3 failed attempts! Contact admin.";
         } else {
-            // 4. Time-Based Transaction Velocity Check
-            // Old Line 25 causing the crash:
-            $time_stmt = mysqli_prepare($conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL"); 
-            mysqli_stmt_bind_param($time_stmt, "s", $card); 
-            mysqli_stmt_execute($time_stmt); 
-            $time_res = mysqli_stmt_get_result($time_stmt); 
-            $time_data = mysqli_fetch_assoc($time_res); 
-            mysqli_stmt_close($time_stmt); 
+            // 4. Time-Based Transaction Velocity Check (பாதுகாப்பாக சரிபார்க்கப்படுகிறது)
+            $column_check = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'last_login'");
+            
+            if (mysqli_num_rows($column_check) > 0) {
+                // தரவுத்தளத்தில் காலம் இருந்தால் மட்டுமே இந்த குறியீடு இயங்கும்
+                $time_stmt = mysqli_prepare($conn, "SELECT TIMESTAMPDIFF(SECOND, last_login, NOW()) AS diff FROM users WHERE card_number = ? AND last_login IS NOT NULL"); 
+                mysqli_stmt_bind_param($time_stmt, "s", $card); 
+                mysqli_stmt_execute($time_stmt); 
+                $time_res = mysqli_stmt_get_result($time_stmt); 
+                $time_data = mysqli_fetch_assoc($time_res); 
+                mysqli_stmt_close($time_stmt); 
+            } else {
+                // காலம் இல்லாத பட்சத்தில் பிழை வராமல் தவிர்க்க தற்காலிக மதிப்பு வழங்கப்படுகிறது
+                $time_data = ['diff' => 9999];
+            }
 
             // விரைவான லாகின் முயற்சிகளை சரிபார்த்தல் (120 வினாடிகள்)
             if ($time_data && $time_data['diff'] < 120 && !isset($_POST['user_verified'])) { 
@@ -37,11 +44,14 @@ if (isset($_POST['login'])) {
             } else {
                 // 5. ஹேஷ் செய்யப்பட்ட பின்னை (PIN) சரிபார்த்தல்
                 if (password_verify($pin, $user_data['password'])) { 
-                    // வெற்றி: கடைசியாக லாகின் செய்த நேரத்தை புதுப்பித்து, பழைய தோல்வி பதிவுகளை நீக்குதல்
-                    $update_stmt = mysqli_prepare($conn, "UPDATE users SET last_login = NOW() WHERE card_number = ?"); 
-                    mysqli_stmt_bind_param($update_stmt, "s", $card); 
-                    mysqli_stmt_execute($update_stmt); 
-                    mysqli_stmt_close($update_stmt); 
+                    
+                    // லாகின் நேரத்தை புதுப்பிக்கும் முன் அந்த காலம் உள்ளதா என சரிபார்க்கிறது
+                    if (mysqli_num_rows($column_check) > 0) {
+                        $update_stmt = mysqli_prepare($conn, "UPDATE users SET last_login = NOW() WHERE card_number = ?"); 
+                        mysqli_stmt_bind_param($update_stmt, "s", $card); 
+                        mysqli_stmt_execute($update_stmt); 
+                        mysqli_stmt_close($update_stmt); 
+                    }
 
                     $clear_stmt = mysqli_prepare($conn, "DELETE FROM login_attempts WHERE card_number = ?"); 
                     mysqli_stmt_bind_param($clear_stmt, "s", $card); 
