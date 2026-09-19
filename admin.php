@@ -68,9 +68,8 @@ if (isset($_POST['delete_and_report'])) {
     <title>ATM Shield Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 🚀 OVERRIDE FIX: style.css-ல் உள்ள ஃபிலெக்ஸ் முரண்பாடுகளை அட்மின் பக்கத்தில் மட்டும் நீக்குகிறது */
         body {
-            display: block !important; /* லேயர்களைப் பக்கவாட்டில் மோதவிடாமல் தனித்தனி வரிகளாகப் பிரிக்கிறது */
+            display: block !important;
             padding: 20px !important;
             background-color: #0f172a !important;
         }
@@ -91,6 +90,68 @@ if (isset($_POST['delete_and_report'])) {
             margin: 0 auto !important;
             clear: both;
         }
+        
+        /* 🚀 NEW BORDER GRID INFRASTRUCTURE: டேபிளுக்குத் தெளிவான பார்டர்கள் வழங்கும் புதிய ஸ்டைல்ஸ் */
+        table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin-top: 20px !important;
+            background: #0f172a !important;
+            border: 2px solid #334155 !important; /* வெளிப்புற முதன்மை தடிமனான பார்டர் */
+            border-radius: 6px !important;
+            overflow: hidden !important;
+        }
+        th, td {
+            padding: 14px 12px !important;
+            text-align: center !important; /* அனைத்து விபரங்களையும் நடுப்பகுதியில் காட்டுகிறது */
+            border: 1px solid #334155 !important; /* உட்புறக் கட்டக் கோடுகள் (Table Borders) */
+            font-size: 14px !important;
+        }
+        th {
+            background: #ef4444 !important; /* மோசடி கண்காணிப்புக்கான சிவப்பு தலைப்பு */
+            color: white !important;
+            font-weight: bold !important;
+            border-bottom: 2px solid #475569 !important;
+        }
+        .locked-title th {
+            background: #3182ce !important; /* லாக் ஆன கணக்குகளுக்கான நீல நிற தலைப்பு */
+        }
+        tr:hover {
+            background: #1e293b !important; /* மவுஸ் வைக்கும் போது மென்மையான பேக்ரவுண்ட் மாறும் */
+        }
+        .badge {
+            background: #ef4444;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .btn-delete-report {
+            background: #f59e0b !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 14px !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            font-weight: bold !important;
+            font-size: 12px !important;
+            width: auto !important;
+        }
+        .btn-delete-report:hover { background: #d97706 !important; }
+        .btn-unlock {
+            background: #22c55e !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 14px !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            font-weight: bold !important;
+            font-size: 12px !important;
+            width: auto !important;
+        }
+        .btn-unlock:hover { background: #16a34a !important; }
     </style>
 </head>
 <body>
@@ -160,7 +221,7 @@ if (isset($_POST['delete_and_report'])) {
              ==================================================== -->
         <h3 style="color: #38bdf8; text-align: left; margin-top: 20px;">🔒 Locked Accounts Management</h3>
         <table>
-            <thead>
+            <thead class="locked-title">
                 <tr>
                     <th>Customer Name</th>
                     <th>Card Number</th>
