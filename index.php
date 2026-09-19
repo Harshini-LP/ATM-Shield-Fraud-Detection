@@ -63,17 +63,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
         .btn-main:hover { background: #0ea5e9; }
         .alert-error { color: #f87171; background: #451a03; border: 1px solid #7f1d1d; padding: 10px; margin-bottom: 15px; border-radius: 6px; font-size: 14px; width: 90%; margin-left: auto; margin-right: auto; box-sizing: border-box; }
         .vector-badge { width: 100%; height: 90px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; }
-        .action-link { display: block; padding: 10px; margin: 8px auto; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 6px; width: 85%; border: 1px solid transparent; transition: 0.2s; text-align: center; }
-        .btn-register { color: #4ade80; border-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
-        .btn-register:hover { background: #16a34a; color: white; }
-        .btn-admin { color: #f87171; border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
-        .btn-admin:hover { background: #dc2626; color: white; }
+        .action-link { display: block; padding: 12px; margin: 8px auto; text-decoration: none; font-weight: bold; font-size: 15px; border-radius: 6px; width: 90%; border: 1px solid transparent; transition: 0.2s; text-align: center; box-sizing: border-box; }
+        .btn-register { color: #0f172a; background: #4ade80; }
+        .btn-register:hover { background: #22c55e; }
+        
+        /* 🤫 ரகசிய லிங்க்கிற்கான ஸ்டைல் (Secret Hidden Dot Link Style) */
+        .secret-dot {
+            color: #475569;
+            text-decoration: none;
+            cursor: default;
+        }
+        .secret-dot:hover {
+            color: #475569; /* ஹோவர் செய்தாலும் நிறம் மாறாது, சாதாரண புள்ளி போலவே இருக்கும் */
+        }
     </style>
 </head>
-<body>
+
+    <body>
 
 <div class="container">
-    <!-- ⚡ High-Tech Vector Shield Logo Asset -->
+    <!-- High-Tech Vector Shield Logo Asset -->
     <div class="vector-badge">
         <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://w3.org">
             <path d="M50,10 L85,25 L85,55 C85,75 50,85 50,85 C50,85 15,75 15,55 L15,25 Z" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
@@ -97,16 +106,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
         <button type="submit" name="login_submit" class="btn-main">AUTHENTICATE CARD</button>
     </form>
     
-    <!-- ====================================================
-         🔥 NEW ADDITION: MISSING SYSTEM NAVIGATION ACTIONS
-         ==================================================== -->
+    <!-- New Account Button Grid -->
     <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #334155;">
         <a href="register.php" class="action-link btn-register">📝 Create New Account</a>
-        <a href="admin_login.php" class="action-link btn-admin">⚙️ Access Admin Security Gate</a>
     </div>
     
-    <p style="font-size: 11px; color: #475569; margin-top: 20px; margin-bottom: 0;">Demo Asset: 4000 1234 5678 8742 | PIN: 1234</p>
+    <!-- 🤫 SECRET NAV LAYER: அட்மின் பட்டன் நீக்கப்பட்டு, சாதாரண வரியின் முற்றுப்புள்ளியாக ( . ) மாற்றப்பட்டுள்ளது -->
+    <p style="font-size: 11px; color: #475569; margin-top: 25px; margin-bottom: 0;">
+        Demo Asset: 4000 1234 5678 8742 | PIN: 1234<a href="admin_login.php" class="secret-dot">.</a>
+    </p>
 </div>
 
 </body>
 </html>
+
