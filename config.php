@@ -3,12 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Dynamically reading secure environment variables straight from the Render system cluster
-$db_host = isset($_ENV['DB_HOST']) ? $_ENV['DB_HOST'] : "br1fwj2kwymbxjsqxrtc-mysql.services.clever-cloud.com";
-$db_user = isset($_ENV['DB_USER']) ? $_ENV['DB_USER'] : "ulecruaargmbi6md";
-$db_pass = isset($_ENV['DB_PASS']) ? $_ENV['DB_PASS'] : "W1P8T3MHcAknbSaQlZWC";
-$db_name = isset($_ENV['DB_NAME']) ? $_ENV['DB_NAME'] : "br1fwj2kwymbxjsqxrtc";
-$db_port = isset($_ENV['DB_PORT']) ? intval($_ENV['DB_PORT']) : 3306;
+// ⚠️ getenv() மூலமாக Render சிஸ்டம் விபரங்களை துல்லியமாக படிக்கிறோம்
+$db_host = getenv('DB_HOST') ?: "br1fwj2kwymbxjsqxrtc-mysql.services.clever-cloud.com";
+$db_user = getenv('DB_USER') ?: "ulecruaargmbi6md";
+$db_pass = getenv('DB_PASS') ?: "W1P8T3MHcAknbSaQlZWC";
+$db_name = getenv('DB_NAME') ?: "br1fwj2kwymbxjsqxrtc";
+$db_port = getenv('DB_PORT') ? intval(getenv('DB_PORT')) : 3306;
 
 $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
 
@@ -57,3 +57,4 @@ if (mysqli_num_rows($check_user) == 0) {
     mysqli_stmt_close($init_stmt);
 }
 ?>
+
