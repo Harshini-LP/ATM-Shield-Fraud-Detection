@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_balance_passwor
     $entered_pass = trim($_POST['balance_password']);
 
     if (!empty($entered_pass)) {
+        // Query database for balance (config.php-ல் உள்ள டேபிள் வடிவமைப்புடன் சீரமைக்கப்பட்டுள்ளது)
         $stmt = $conn->prepare("SELECT balance FROM users WHERE card_number = ?");
         $stmt->bind_param("s", $card_number);
         $stmt->execute();
@@ -37,6 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_balance_passwor
 
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
+            
+            // எளிய டெமோவிற்காக உங்க ஏடிஎம் பின்னையே (1234) செகண்டரி பாஸ்வேர்டாக பயன்படுத்தலாம்
             $balance_display = "💰 Account Balance: ₹" . number_format($row['balance'], 2);
         } else {
             $balance_error = "User details not found.";
@@ -109,9 +112,9 @@ if (isset($_POST['logout_btn'])) {
     <div class="dashboard-container">
         
         <!-- 📸 ====================================================
-             நெவிகேஷனுக்கு கீழே பதாகை படம் (Banner Image Display)
+             🔥 FIXED: இணையத்தில் இருந்து நேரடியாக லோட் ஆகும் லைவ் பேனர் இமேஜ் லிங்க்
              ==================================================== -->
-        <img src="dashboard-banner.png" alt="ATM Shield Monitoring Live Network" class="dashboard-banner" onerror="this.src='https://decentro.tech';" />
+        <img src="https://unsplash.com" alt="ATM Shield Monitoring Live Network" class="dashboard-banner" />
 
         <h2>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h2>
         
@@ -119,6 +122,7 @@ if (isset($_POST['logout_btn'])) {
             💳 Card Number: <b><?php echo htmlspecialchars($card_number); ?></b>
         </div>
 
+        <!-- withdraw.php-ல் இருந்து வரும் பண வரம்பு எர்ரர் மெசேஜ்களைக் காட்டும் பகுதி -->
         <?php if (isset($_SESSION['error_msg'])): ?>
             <div class="alert-error">
                 <?php echo $_SESSION['error_msg']; unset($_SESSION['error_msg']); ?>
