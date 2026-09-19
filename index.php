@@ -1,99 +1,97 @@
-<?php 
-include 'config.php'; 
+<?php
+session_start();
 
-$error_msg = "";
+// Database Connection Settings (Adjust DB credentials if needed)
+$servername = "localhost";
+$username   = "root";
+$password   = "";
+$dbname     = "atm_db";
 
-if (isset($_POST['login'])) { 
-    // 1. படிவத்திலிருந்து உள்ளீடுகளைப் பெற்று சுத்தம் செய்தல்
-    $card = trim($_POST['card_number']);
-    $pin = trim($_POST['pin']);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-    // 2. தரவுத்தளத்திலிருந்து பயனர் தகவலை எடுத்தல்
-    $user_stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE card_number = ?");
-    mysqli_stmt_bind_param($user_stmt, "s", $card);
-    mysqli_stmt_execute($user_stmt);
-    $user_res = mysqli_stmt_get_result($user_stmt);
-    $user_data = mysqli_fetch_assoc($user_res);
-    mysqli_stmt_close($user_stmt);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-    if ($user_data) {
-        // 3. கணக்கு ஏற்கனவே முடக்கப்பட்டிருந்தால் (Locked) உடனடியாக தடுத்தல்
-        if ($user_data['card_status'] === 'Locked') {
-            $error_msg = "❌ Your account is LOCKED due to 3 failed attempts! Contact admin.";
+// Variables & Message Flags
+$login_error = "";
+$balance_error = "";
+$balance_display = "";
+$show_balance_sec = false;
+
+// -------------------------------------------------------------
+// Step 1: Main Login Verification (Card Number & ATM PIN)
+// -------------------------------------------------------------
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
+    $card_no = trim($_POST['card_number']);
+    $pin     = trim($_POST['pin']);
+
+    if (!empty($card_no) && !empty($pin)) {
+        // Checking DB for user credentials
+        $stmt = $conn->prepare("SELECT * FROM users WHERE card_number = ? AND pin = ?");
+        $stmt->bind_param("ss", $card_no, $pin);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
+            $_SESSION['user_id']      = $user['id'];
+            $_SESSION['card_number']  = $user['card_number'];
+            $_SESSION['account_name'] = $user['name'];
+            $_SESSION['is_logged_in'] = true;
         } else {
-            // 4. Time-Based Transaction Velocity Check (பாதுகாப்பாக சரிபார்க்கப்படுகிறது)
-            $column_check = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'last_login'");
+            $login_error = "Invalid Card Number or ATM PIN!";
+        }
+        $stmt->close();
+    } else {
+        $login_error = "Please fill in all login fields.";
+    }
+}
+
+// -------------------------------------------------------------
+// Step 2: "Check Balance" Click Handler
+// -------------------------------------------------------------
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_balance_btn'])) {
+    $show_balance_sec = true;
+}
+
+// -------------------------------------------------------------
+// Step 3: Balance Password Verification
+// -------------------------------------------------------------
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_balance_pass'])) {
+    $entered_bal_pass = trim($_POST['balance_password']);
+    $card_no = $_SESSION['card_number'];
+
+    if (!empty($entered_bal_pass)) {
+        // Querying for balance and secondary balance password
+        $stmt = $conn->prepare("SELECT balance, balance_password FROM users WHERE card_number = ?");
+        $stmt->bind_param("s", $card_no);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        if ($res->num_rows == 1) {
+            $row = $res->fetch_assoc();
             
-            if (mysqli_num_rows($column_check) > 0) {
-                           // விரைவான லாகின் முயற்சிகளை சரிபார்த்தல் (120 வினாடிகள்)
-            if ($time_data && $time_data['diff'] < 120 && !isset($_POST['user_verified'])) { 
-                echo "
-                <script>
-                    // பயனர் லாகின் செய்யும் போது 2 நிமிட எச்சரிக்கை பாப்-அப்
-                    let userChoice = confirm('🚨 Security Alert: Multiple rapid authentication attempts detected within 2 minutes!\\n\\nIs this you trying to log in? Click OK (Yes) or Cancel (No).');
-                    
-                    if (userChoice) {
-                        // பயனர் 'Yes' (OK) அழுத்தினால் OTP பக்கத்திற்குச் செல்லும்
-                        window.location.href = 'verify_otp.php?card=" . urlencode($card) . "';
-                    } else {
-                        // பயனர் 'No' (Cancel) அழுத்தினால் லாகின் ரத்து செய்யப்படும்
-                        alert('❌ Session terminated. Security team notified.');
-                        window.location.href = 'index.php';
-                    }
-                </script>";
-                exit();
-            }
+            // Verifying the Balance Password
+            if ($row['balance_password'] === $entered_bal_pass) {
+                $balance_display = "💰 Current Balance: ₹" . number_format($row['balance'], 2);
             } else {
-                // 5. ஹேஷ் செய்யப்பட்ட பின்னை (PIN) சரிபார்த்தல்
-                if (password_verify($pin, $user_data['password'])) { 
-                    
-                    // லாகின் நேரத்தை புதுப்பிக்கும் முன் அந்த காலம் உள்ளதா என சரிபார்க்கிறது
-                    if (mysqli_num_rows($column_check) > 0) {
-                        $update_stmt = mysqli_prepare($conn, "UPDATE users SET last_login = NOW() WHERE card_number = ?"); 
-                        mysqli_stmt_bind_param($update_stmt, "s", $card); 
-                        mysqli_stmt_execute($update_stmt); 
-                        mysqli_stmt_close($update_stmt); 
-                    }
-
-                    $clear_stmt = mysqli_prepare($conn, "DELETE FROM login_attempts WHERE card_number = ?"); 
-                    mysqli_stmt_bind_param($clear_stmt, "s", $card); 
-                    mysqli_stmt_execute($clear_stmt); 
-                    mysqli_stmt_close($clear_stmt); 
-
-                    $_SESSION['user_card'] = $card; 
-                    header("Location: dashboard.php"); 
-                    exit(); 
-                } else { 
-                    // தோல்வி: தவறான லாகின் முயற்சியை பதிவு செய்தல்
-                    $log_stmt = mysqli_prepare($conn, "INSERT INTO login_attempts (card_number) VALUES (?)"); 
-                    mysqli_stmt_bind_param($log_stmt, "s", $card); 
-                    mysqli_stmt_execute($log_stmt); 
-                    mysqli_stmt_close($log_stmt); 
-
-                    // தோல்விகளின் எண்ணிக்கையை சரிபார்த்தல்
-                    $count_stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM login_attempts WHERE card_number = ?"); 
-                    mysqli_stmt_bind_param($count_stmt, "s", $card); 
-                    mysqli_stmt_execute($count_stmt); 
-                    $count_res = mysqli_stmt_get_result($count_stmt); 
-                    $count_data = mysqli_fetch_assoc($count_res); 
-                    mysqli_stmt_close($count_stmt); 
-
-                    if ($count_data['total'] >= 3) { 
-                        $lock_stmt = mysqli_prepare($conn, "UPDATE users SET card_status = 'Locked' WHERE card_number = ?"); 
-                        mysqli_stmt_bind_param($lock_stmt, "s", $card); 
-                        mysqli_stmt_execute($lock_stmt); 
-                        mysqli_stmt_close($lock_stmt); 
-                        $error_msg = "❌ Your account is LOCKED due to 3 failed attempts!";
-                    } else { 
-                        $rem = 3 - $count_data['total']; 
-                        $error_msg = "❌ Invalid PIN. You have " . $rem . " attempts remaining."; 
-                    } 
-                } 
+                $balance_error = "❌ Incorrect Balance Password! Access Denied.";
+                $show_balance_sec = true; // Retain prompt for retry
             }
         }
+        $stmt->close();
     } else {
-        $error_msg = "❌ Card number not found inside system directory records.";
+        $balance_error = "Please enter your Balance Password.";
+        $show_balance_sec = true;
     }
+}
+
+// Logout Handler
+if (isset($_POST['logout_btn'])) {
+    session_destroy();
+    header("Location: index.php");
+    exit();
 }
 ?>
 
@@ -101,44 +99,81 @@ if (isset($_POST['login'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ATM Shield - Secure Login</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Shield - Fraud Detection & Security System</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f5; margin: 0; padding: 0; }
+        .container { max-width: 450px; margin: 60px auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        h2 { color: #1a365d; margin-bottom: 20px; }
+        input[type="text"], input[type="password"] { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 15px; }
+        .btn { width: 95%; padding: 12px; background: #2b6cb0; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        .btn:hover { background: #2c5282; }
+        .btn-balance { background: #2f855a; }
+        .btn-balance:hover { background: #22543d; }
+        .btn-logout { background: #c53030; }
+        .btn-logout:hover { background: #9b2c2c; }
+        .alert-error { color: #c53030; background: #fff5f5; border: 1px solid #feb2b2; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px; }
+        .alert-success { color: #276749; background: #f0fff4; border: 1px solid #9ae6b4; padding: 15px; border-radius: 5px; font-size: 18px; font-weight: bold; margin-top: 15px; }
+        .sec-box { background: #f7fafc; border: 1px dashed #cbd5e0; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- App Logo -->
-        <img src="logo.png" alt="Logo" style="width: 100px; height: auto; margin-bottom: 10px;">
+
+<div class="container">
+    <h2>🛡️ ATM Shield System</h2>
+
+    <?php if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true): ?>
         
-        <h2>🛡️ ATM Shield</h2>
-        <p style="color:#94a3b8; font-size:14px; margin-bottom:15px;">Real-Time Protection Enabled</p>
-        
-        <!-- பிழை செய்திகளைத் திரையில் காண்பித்தல் -->
-        <?php if (!empty($error_msg)): ?>
-            <div class="alert-danger" style="background:#ef4444; color:white; padding:10px; border-radius:6px; margin-bottom:15px; font-weight:bold; font-size:13px; text-align:center;">
-                <?php echo $error_msg; ?>
-            </div>
+        <!-- STEP 1: LOGIN FORM -->
+        <h3>Account Login</h3>
+        <?php if (!empty($login_error)): ?>
+            <div class="alert-error"><?php echo $login_error; ?></div>
         <?php endif; ?>
-        
-        <form method="POST" autocomplete="off">
-            <input type="text" name="card_number" placeholder="💳 Enter Card Number (only 16 digits)" required 
-                   maxlength="30" title="Please enter your card number exactly as registered">
-            <input type="password" name="pin" placeholder="🔑 Enter 4 Digit PIN" required 
-                   maxlength="4" minlength="4" pattern="[0-9]{4}" title="Please enter exactly 4 numbers">
-            <button type="submit" name="login">Login</button>
+
+        <form method="POST" action="index.php">
+            <input type="text" name="card_number" placeholder="Card Number" required><br>
+            <input type="password" name="pin" placeholder="4-Digit ATM PIN" required><br>
+            <button type="submit" name="login_submit" class="btn">Login to Account</button>
         </form>
 
-        <br>
-        <div style="text-align: center; margin-top: 10px;">
-            <a href="register.php" style="color:#38bdf8; text-decoration:none; font-size:14px; font-weight:bold;">🆕 Open New Account (Register)</a>
-        </div>
+    <?php else: ?>
 
-        <!-- SECRET ADMIN LINK AREA -->
-        <div style="text-align: center; margin-top: 25px; font-size: 11px; color: #475569;">
-            <span>v1.2.0 Network Secure </span>
-            <a href="admin_login.php" style="color: #475569; text-decoration: none; cursor: default;">.</a>
-            <span> Powered by ATM Shield</span>
-        </div>
-    </div>
+        <!-- STEP 2: MAIN DASHBOARD -->
+        <h3>Welcome, <?php echo htmlspecialchars($_SESSION['account_name'] ?? 'User'); ?>!</h3>
+        <p>Card Number: <b><?php echo htmlspecialchars($_SESSION['card_number']); ?></b></p>
+        <hr>
+
+        <form method="POST" action="index.php">
+            <button type="submit" name="check_balance_btn" class="btn btn-balance">Check Balance</button>
+            <button type="submit" name="logout_btn" class="btn btn-logout">Logout</button>
+        </form>
+
+        <!-- STEP 3: BALANCE SECURITY PIN PROMPT -->
+        <?php if ($show_balance_sec && empty($balance_display)): ?>
+            <div class="sec-box">
+                <h4>🔒 Balance Security Verification</h4>
+                <p style="font-size: 13px; color: #4a5568;">Enter your secondary password to reveal balance:</p>
+
+                <?php if (!empty($balance_error)): ?>
+                    <div class="alert-error"><?php echo $balance_error; ?></div>
+                <?php endif; ?>
+
+                <form method="POST" action="index.php">
+                    <input type="password" name="balance_password" placeholder="Enter Balance Password" required><br>
+                    <button type="submit" name="verify_balance_pass" class="btn">Verify Password</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <!-- STEP 4: DISPLAY BALANCE RESULT -->
+        <?php if (!empty($balance_display)): ?>
+            <div class="alert-success">
+                <?php echo $balance_display; ?>
+            </div>
+        <?php endif; ?>
+
+    <?php endif; ?>
+</div>
+
 </body>
 </html>
