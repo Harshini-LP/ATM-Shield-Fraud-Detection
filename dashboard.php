@@ -30,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_balance_passwor
     $entered_pass = trim($_POST['balance_password']);
 
     if (!empty($entered_pass)) {
-        // Query database for balance (config.php-ல் உள்ள டேபிள் வடிவமைப்புடன் சீரமைக்கப்பட்டுள்ளது)
         $stmt = $conn->prepare("SELECT balance FROM users WHERE card_number = ?");
         $stmt->bind_param("s", $card_number);
         $stmt->execute();
@@ -38,8 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_balance_passwor
 
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
-            
-            // எளிய டெமோவிற்காக உங்க ஏடிஎம் பின்னையே (1234) செகண்டரி பாஸ்வேர்டாக பயன்படுத்தலாம்
             $balance_display = "💰 Account Balance: ₹" . number_format($row['balance'], 2);
         } else {
             $balance_error = "User details not found.";
@@ -80,12 +77,22 @@ if (isset($_POST['logout_btn'])) {
         .btn-verify:hover { background: #2b6cb0; }
         .btn-logout { background: #e53e3e; color: white; }
         .btn-logout:hover { background: #c53030; }
-        /* ⚠️ வித்ரா பாக்ஸிற்கு தேவையான புதிய ஸ்டைல்ஸ் */
         input[type="password"], input[type="number"] { width: 85%; padding: 12px; margin: 12px 0; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 15px; text-align: center; }
         .alert-error { color: #9b2c2c; background: #fff5f5; border: 1px solid #feb2b2; padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 14px; }
         .alert-success { color: #22543d; background: #f0fff4; border: 1px solid #9ae6b4; padding: 18px; border-radius: 8px; font-size: 20px; font-weight: bold; margin-top: 20px; }
         .sec-card { background: #f7fafc; border: 1px dashed #a0aec0; padding: 20px; border-radius: 8px; margin-top: 20px; }
         .withdraw-box { margin-top: 35px; padding-top: 25px; border-top: 2px dashed #cbd5e0; }
+        
+        /* ⚠️ பதாகை படத்திற்கான புதிய ஸ்டைல்ஸ் (Banner Responsive Styling) */
+        .dashboard-banner {
+            width: 100%;
+            height: auto;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #cbd5e0;
+        }
     </style>
 </head>
 <body>
@@ -100,13 +107,18 @@ if (isset($_POST['logout_btn'])) {
 
     <!-- Main Dashboard Container -->
     <div class="dashboard-container">
+        
+        <!-- 📸 ====================================================
+             நெவிகேஷனுக்கு கீழே பதாகை படம் (Banner Image Display)
+             ==================================================== -->
+        <img src="dashboard-banner.png" alt="ATM Shield Monitoring Live Network" class="dashboard-banner" onerror="this.src='https://decentro.tech';" />
+
         <h2>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h2>
         
         <div class="user-info">
-            静态 💳 Card Number: <b><?php echo htmlspecialchars($card_number); ?></b>
+            💳 Card Number: <b><?php echo htmlspecialchars($card_number); ?></b>
         </div>
 
-        <!-- ⚠️ withdraw.php-ல் இருந்து வரும் பண வரம்பு எர்ரர் மெசேஜ்களைக் காட்டும் பகுதி -->
         <?php if (isset($_SESSION['error_msg'])): ?>
             <div class="alert-error">
                 <?php echo $_SESSION['error_msg']; unset($_SESSION['error_msg']); ?>
@@ -142,10 +154,7 @@ if (isset($_POST['logout_btn'])) {
             </div>
         <?php endif; ?>
 
-
-        <!-- ====================================================
-             🔥 NEW WITHDRAWAL FEATURE INTEGRATION
-             ==================================================== -->
+        <!-- Cash Withdrawal Suite -->
         <div class="withdraw-box">
             <form method="POST" action="withdraw.php">
                 <h3>💰 Cash Withdrawal Suite</h3>
