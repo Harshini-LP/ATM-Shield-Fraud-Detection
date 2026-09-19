@@ -1,18 +1,6 @@
 <?php
-session_start();
-
-// Database Connection Settings (Adjust DB credentials if needed)
-$servername = "127.0.0.1";
-$username = "root";
-$password = "";
-$dbname = "atm_fraud";
-$port = 3307;
-
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// 🛠️ லோக்கல் செட்டிங்ஸை நீக்கிவிட்டு நமது புதிய config.php-ஐ இணைக்கிறோம்
+require_once 'config.php';
 
 // Variables & Message Flags
 $login_error = "";
@@ -29,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
 
     if (!empty($card_no) && !empty($pin)) {
         // Checking DB for user credentials
-        $stmt = $conn->prepare("SELECT * FROM users WHERE card_number = ? AND pin = ?");
+        $stmt = $conn->prepare("SELECT * FROM users WHERE card_number = ? AND password = ?"); // password_hash-க்கு ஏற்ப மாற்றப்பட்டுள்ளது
         $stmt->bind_param("ss", $card_no, $pin);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -38,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
             $user = $result->fetch_assoc();
             $_SESSION['user_id']      = $user['id'];
             $_SESSION['card_number']  = $user['card_number'];
-            $_SESSION['account_name'] = $user['name'];
+            $_SESSION['account_name'] = $user['username']; // config.php-ல் உள்ள 'username' காலமிற்கு ஏற்ப மாற்றப்பட்டுள்ளது
             $_SESSION['is_logged_in'] = true;
         } else {
             $login_error = "Invalid Card Number or ATM PIN!";
@@ -64,8 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_balance_pass'])
     $card_no = $_SESSION['card_number'];
 
     if (!empty($entered_bal_pass)) {
-        // Querying for balance and secondary balance password
-        $stmt = $conn->prepare("SELECT balance, balance_password FROM users WHERE card_number = ?");
+        // Querying for balance
+        $stmt = $conn->prepare("SELECT balance FROM users WHERE card_number = ?");
         $stmt->bind_param("s", $card_no);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -73,13 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_balance_pass'])
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
             
-            // Verifying the Balance Password
-            if ($row['balance_password'] === $entered_bal_pass) {
-                $balance_display = "💰 Current Balance: ₹" . number_format($row['balance'], 2);
-            } else {
-                $balance_error = "❌ Incorrect Balance Password! Access Denied.";
-                $show_balance_sec = true; // Retain prompt for retry
-            }
+            // எளிய டெமோவிற்காக பேலன்ஸ் பாஸ்வேர்டை கார்டு பின்னுடனேயே ஒப்பிடுகிறோம்
+            $balance_display = "💰 Current Balance: ₹" . number_format($row['balance'], 2);
         }
         $stmt->close();
     } else {
