@@ -1,5 +1,6 @@
-<?php
-include 'config.php';
+<?php 
+// 🛠️ நமது புதிய config.php-ஐ இணைக்கிறோம் (அதில் ஏற்கனவே ob_start மற்றும் session_start உள்ளது)
+require_once 'config.php'; 
 
 $message = "";
 $message_class = "";
@@ -45,7 +46,7 @@ if (isset($_POST['register'])) {
             $default_status = 'Active';
 
             // ----------------------------------------------------
-            // FIX: Corrected data type format layout string from ssvds to sssss
+            // FIX: Corrected data type format layout string
             // ----------------------------------------------------
             $insert_stmt = mysqli_prepare($conn, "INSERT INTO users (username, password, card_number, balance, card_status) VALUES (?, ?, ?, ?, ?)");
             mysqli_stmt_bind_param($insert_stmt, "sssss", $name, $hashed_pin, $card, $initial_deposit, $default_status);
@@ -62,7 +63,6 @@ if (isset($_POST['register'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,9 +72,19 @@ if (isset($_POST['register'])) {
  
     <title>ATM Shield - Register</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; }
+        .container { max-width: 450px; margin: 50px auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; border: 1px solid #334155; }
+        h2 { color: #38bdf8; margin-top: 0; }
+        input[type="text"], input[type="password"], input[type="number"] { width: 90%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; font-size: 15px; }
+        button { width: 95%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #0ea5e9; }
+        .alert-danger { color: #ef4444; background: #221111; border: 1px solid #ef4444; }
+        .alert-success { color: #22c55e; background: #112211; border: 1px solid #22c55e; }
+    </style>
 </head>
 <body>
-    <div class="container" style="max-width: 450px;">
+    <div class="container">
         <h2>📝 ATM Shield Register</h2>
         <p style="color:#94a3b8; font-size:14px; margin-bottom:15px;">Register a new customer card in the secure network</p>
 
@@ -85,23 +95,23 @@ if (isset($_POST['register'])) {
             </div>
         <?php endif; ?>
         
-        <form method="POST" autocomplete="off">
-            <input type="text" name="name" placeholder="👤 Full Name / Username" required maxlength="50">
+        <form method="POST" autocomplete="off" action="register.php">
+            <input type="text" name="name" placeholder="👤 Full Name / Username" required maxlength="50"><br>
             
-            <input type="text" name="card_number" placeholder="💳 Enter Card Number (e.g. 0000xxxx0000xxxx)" required 
-                   maxlength="30" title="Please enter your target card number sequence">
+            <input type="text" name="card_number" placeholder="💳 Enter Card Number (e.g. 4000 1234 5678 8742)" required 
+                   maxlength="30" title="Please enter your target card number sequence"><br>
             
             <input type="password" name="pin" placeholder="🔑 Set 4-Digit Secret PIN" required 
-                   maxlength="4" minlength="4" pattern="[0-9]{4}" title="Please enter exactly 4 numbers">
+                   maxlength="4" minlength="4" pattern="[0-9]{4}" title="Please enter exactly 4 numbers"><br>
             
-            <input type="number" name="balance" placeholder="💰 Initial Deposit Amount (₹)" required min="100" value="50000.00" step="0.01">
+            <input type="number" name="balance" placeholder="💰 Initial Deposit Amount (₹)" required min="100" value="50000.00" step="0.01"><br>
             
-            <button type="submit" name="register" style="margin-top: 10px;">Create Account</button>
+            <button type="submit" name="register">Create Account</button>
         </form>
 
         <br>
-        <div style="text-align: center;">
-            <a href="index.php" style="color:#38bdf8; text-decoration:none; font-weight:bold;">← Go Back to ATM Main Login</a>
+        <div style="text-align: center; margin-top: 10px; border-top: 1px solid #334155; padding-top: 15px;">
+            <a href="index.php" style="color:#38bdf8; text-decoration:none; font-weight:bold; font-size:14px;">← Go Back to ATM Main Login</a>
         </div>
     </div>
 </body>
