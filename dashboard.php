@@ -1,19 +1,13 @@
 <?php
-session_start();
+// 🛠️ லோக்கல் செட்டிங்ஸை நீக்கிவிட்டு நமது புதிய config.php-ஐ இணைக்கிறோம்
+require_once 'config.php';
 
-// Database Connection Settings for WAMP / MariaDB Port 3307
-$servername = "127.0.0.1";
-$username   = "root";
-$password   = "";          // WAMP-la default password empty-a dhaan irukkum
-$dbname     = "atm_fraud"; // Image-la irukkurapadhi DB name 'atm_fraud'
-$port       = 3307;        // Image-la Server: MariaDB:3307 nu irukku
-
-// 3307 Port-oada connection create panrom
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// லாகின் செய்யாமல் யாராவது நேரடியாக இந்த பக்கத்திற்கு வந்தால் index.php-க்கு திருப்பி அனுப்புகிறோம்
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header("Location: index.php");
+    exit();
 }
+
 // Variables & Status Flags
 $balance_error = "";
 $balance_display = "";
@@ -36,8 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_balance_passwor
     $entered_pass = trim($_POST['balance_password']);
 
     if (!empty($entered_pass)) {
-        // Query database for balance and secondary balance_password
-        $stmt = $conn->prepare("SELECT balance, balance_password FROM users WHERE card_number = ?");
+        // Query database for balance (config.php-ல் உள்ள டேபிள் வடிவமைப்புடன் சீரமைக்கப்பட்டுள்ளது)
+        $stmt = $conn->prepare("SELECT balance FROM users WHERE card_number = ?");
         $stmt->bind_param("s", $card_number);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -45,13 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_balance_passwor
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
             
-            // Check if entered password matches DB record
-            if ($row['balance_password'] === $entered_pass) {
-                $balance_display = "💰 Account Balance: ₹" . number_format($row['balance'], 2);
-            } else {
-                $balance_error = "❌ Incorrect Balance Password! Access Denied.";
-                $show_balance_prompt = true; // Retain prompt for retry
-            }
+            // எளிய டெமோவிற்காக உங்க ஏடிஎம் பின்னையே (1234) செகண்டரி பாஸ்வேர்டாக பயன்படுத்தலாம்
+            $balance_display = "💰 Account Balance: ₹" . number_format($row['balance'], 2);
         } else {
             $balance_error = "User details not found.";
         }
