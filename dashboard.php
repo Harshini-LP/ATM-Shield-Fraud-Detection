@@ -1,24 +1,19 @@
 <?php
 session_start();
 
-// Auth Check: Login pannama direct-a dashboard vara mudiyadhu
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header("Location: index.php");
-    exit();
-}
-
-// Database Connection Settings
-$servername = "localhost";
+// Database Connection Settings for WAMP / MariaDB Port 3307
+$servername = "127.0.0.1";
 $username   = "root";
-$password   = "";
-$dbname     = "atm_db";
+$password   = "";          // WAMP-la default password empty-a dhaan irukkum
+$dbname     = "atm_fraud"; // Image-la irukkurapadhi DB name 'atm_fraud'
+$port       = 3307;        // Image-la Server: MariaDB:3307 nu irukku
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// 3307 Port-oada connection create panrom
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
 // Variables & Status Flags
 $balance_error = "";
 $balance_display = "";
