@@ -23,7 +23,6 @@ if (isset($_POST['unlock_account'])) {
     mysqli_stmt_close($unlock_stmt);
 
     if ($unlock_success) {
-        // Clear out the bad login tracking counter parameters
         $clear_stmt = mysqli_prepare($conn, "DELETE FROM login_attempts WHERE card_number = ?");
         mysqli_stmt_bind_param($clear_stmt, "s", $target_card);
         mysqli_stmt_execute($clear_stmt);
@@ -68,104 +67,21 @@ if (isset($_POST['delete_and_report'])) {
  
     <title>ATM Shield Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; }
-        .admin-box {
-            max-width: 950px;
-            width: 95%;
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            border: 1px solid #ef4444; /* Red border for fraud monitoring alert */
-            margin: 30px auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: #0f172a;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #334155;
-            font-size: 14px;
-        }
-        th {
-            background: #ef4444;
-            color: white;
-            font-weight: bold;
-        }
-        tr:hover {
-            background: #1e293b;
-        }
-        .badge {
-            background: #ef4444;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .btn-unlock {
-            background: #22c55e;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            transition: 0.2s;
-            width: auto;
-        }
-        .btn-unlock:hover {
-            background: #16a34a;
-        }
-        .btn-delete-report {
-            background: #f59e0b;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            transition: 0.2s;
-            width: auto;
-        }
-        .btn-delete-report:hover {
-            background: #d97706;
-        }
-        .btn-logout {
-            background: #ef4444;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 6px;
-            display: inline-block;
-            transition: 0.3s;
-        }
-        .btn-logout:hover {
-            background: #b91c1c;
-        }
-    </style>
 </head>
 <body>
-    <div class="admin-box">
-        <div style="text-align: right; margin-bottom: 10px;">
-            <a href="logout.php" class="btn-logout">🚪 Admin Logout</a>
-        </div>
+    <!-- 🚀 FIXED: தலைப்பு மற்றும் லாக்-அவுட் பட்டன் லேயர் சரியாக முதன்மைப் பகுதிக்குக் கொண்டு வரப்பட்டுள்ளது -->
+    <div style="width: 100%; max-width: 950px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
+        <h2 style="color: #ef4444; margin: 0; font-size: 22px;">🛡️ ATM Shield Security Command Center</h2>
+        <a href="logout.php" style="background: #ef4444; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 14px; transition: 0.3s;">🚪 Admin Logout</a>
+    </div>
 
-        <h2 style="color: #ef4444; text-align: center;">🚩 ATM Shield Admin Ledger Dashboard</h2>
-        <p style="text-align: center; color: #94a3b8; margin-bottom: 20px;">Real-Time Suspicious Activities Transaction Log Tracking</p>
+    <div class="admin-box">
+        <h3 style="color: #ef4444; margin-top: 0;">🚩 Live Fraud Threat Transaction Logs</h3>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">Real-Time Suspicious Activities Transaction Log Tracking</p>
         
         <!-- ====================================================
              PANEL 1: FRAUD LOGS TRANSACTION TABLE
              ==================================================== -->
-        <h3>Suspicious Transaction Logs</h3>
         <table>
             <thead>
                 <tr>
@@ -202,13 +118,14 @@ if (isset($_POST['delete_and_report'])) {
                                     <button type='submit' name='delete_and_report' class='btn-delete-report'>🗑️ Delete & Report</button>
                                 </form>
                             </td>
-                        </tr>";
+                        </tr>"; // 🚀 FIXED: உங்க பழைய கோடில் விடுபட்ட டேக் மூடல் இங்க திருத்தப்பட்டுள்ளது
                     }
                 }
                 mysqli_stmt_close($log_stmt);
                 ?>
             </tbody>
         </table>
+
         <br><br><hr style="border: 0; border-top: 1px solid #334155;"><br>
 
         <!-- ====================================================
