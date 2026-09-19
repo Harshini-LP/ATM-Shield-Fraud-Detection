@@ -69,15 +69,17 @@ if (isset($_POST['delete_and_report'])) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 🚀 FIXED: தலைப்பு மற்றும் லாக்-அவுட் பட்டன் லேயர் சரியாக முதன்மைப் பகுதிக்குக் கொண்டு வரப்பட்டுள்ளது -->
-    <div style="width: 100%; max-width: 950px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
-        <h2 style="color: #ef4444; margin: 0; font-size: 22px;">🛡️ ATM Shield Security Command Center</h2>
-        <a href="logout.php" style="background: #ef4444; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 14px; transition: 0.3s;">🚪 Admin Logout</a>
+
+    <!-- 🚀 FIXED MATRIX WRAPPER: லேப்டாப் திரைகளில் பாக்ஸுடன் கச்சிதமாகப் பொருந்தும் மேல் பகுதி லேயர் -->
+    <div style="width: 100%; max-width: 1100px; margin: 25px auto 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; box-sizing: border-box;">
+        <h2 style="color: #ef4444; margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 0.5px;">🛡️ ATM Shield Security Command Center</h2>
+        <a href="logout.php" style="background: #ef4444; color: white; padding: 10px 22px; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); transition: 0.2s;">🚪 Admin Logout</a>
     </div>
 
+    <!-- 🚀 ADMIN CONTAINER SHEET -->
     <div class="admin-box">
-        <h3 style="color: #ef4444; margin-top: 0;">🚩 Live Fraud Threat Transaction Logs</h3>
-        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">Real-Time Suspicious Activities Transaction Log Tracking</p>
+        <h3 style="color: #ef4444; margin-top: 0; text-align: left;">🚩 Live Fraud Threat Transaction Logs</h3>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px; text-align: left;">Real-Time Suspicious Activities Transaction Log Tracking</p>
         
         <!-- ====================================================
              PANEL 1: FRAUD LOGS TRANSACTION TABLE
@@ -102,7 +104,7 @@ if (isset($_POST['delete_and_report'])) {
                 $logs = mysqli_stmt_get_result($log_stmt);
 
                 if (mysqli_num_rows($logs) == 0) {
-                    echo "<tr><td colspan='6' style='text-align:center; color:#94a3b8;'>No fraud alerts recorded yet. System secure.</td></tr>";
+                    echo "<tr><td colspan='6' style='text-align:center; color:#94a3b8; padding: 25px;'>No fraud alerts recorded yet. System secure.</td></tr>";
                 } else {
                     while($row = mysqli_fetch_assoc($logs)) {
                         echo "<tr>
@@ -118,7 +120,7 @@ if (isset($_POST['delete_and_report'])) {
                                     <button type='submit' name='delete_and_report' class='btn-delete-report'>🗑️ Delete & Report</button>
                                 </form>
                             </td>
-                        </tr>"; // 🚀 FIXED: உங்க பழைய கோடில் விடுபட்ட டேக் மூடல் இங்க திருத்தப்பட்டுள்ளது
+                        </tr>";
                     }
                 }
                 mysqli_stmt_close($log_stmt);
@@ -131,7 +133,7 @@ if (isset($_POST['delete_and_report'])) {
         <!-- ====================================================
              PANEL 2: LOCKED USER ACCOUNTS & MANAGEMENT
              ==================================================== -->
-        <h3 style="color: #38bdf8;">🔒 Locked Accounts Management</h3>
+        <h3 style="color: #38bdf8; text-align: left; margin-top: 20px;">🔒 Locked Accounts Management</h3>
         <table>
             <thead>
                 <tr>
@@ -151,7 +153,7 @@ if (isset($_POST['delete_and_report'])) {
                 $locked_accounts = mysqli_stmt_get_result($locked_stmt);
 
                 if (mysqli_num_rows($locked_accounts) == 0) {
-                    echo "<tr><td colspan='5' style='text-align:center; color:#94a3b8;'>No customer accounts are currently locked. System running clear.</td></tr>";
+                    echo "<tr><td colspan='5' style='text-align:center; color:#94a3b8; padding: 25px;'>No customer accounts are currently locked. System running clear.</td></tr>";
                 } else {
                     while($user_row = mysqli_fetch_assoc($locked_accounts)) {
                         echo "<tr>
@@ -174,8 +176,8 @@ if (isset($_POST['delete_and_report'])) {
         </table>
 
         <br><br>
-        <div style="text-align: center;">
-            <a href="index.php" style="color:#38bdf8; text-decoration:none; font-weight:bold;">← Go Back to ATM Main Login</a>
+        <div style="text-align: center; margin-top: 10px;">
+            <a href="index.php" style="color:#38bdf8; text-decoration:none; font-weight:bold; font-size: 15px;">← Go Back to ATM Main Login</a>
         </div>
     </div>
 </body>
