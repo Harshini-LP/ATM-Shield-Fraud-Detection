@@ -34,9 +34,13 @@ body {
     box-sizing: border-box;
 }
 
-/* அட்மின் பாக்ஸ் மட்டும் கொஞ்சம் பெரிய திரைகளுக்கு விரிவடைய அனுமதி */
+/* ==========================================================================
+   🔥 NEW FIX: அட்மின் பாக்ஸ் மட்டும் முழு திரைக்கு விரிவடைய அனுமதி (Widescreen Ledger)
+   ========================================================================== */
 .admin-box {
-    max-width: 950px !important;
+    max-width: 1100px !important; /* பெரிய ஸ்கிரீன்களில் லேஜர் டேபிள் முழுமையாகத் தெரிய */
+    width: 95% !important;        /* இருபுறமும் விளிம்புகளைத் தொட்டு முழு அளவில் விரிவடையும் */
+    border-color: #ef4444;        /* அட்மின் பக்கத்திற்கான பிரத்தியேக சிவப்பு எச்சரிக்கை பார்டர் */
 }
 
 h2, h3 {
@@ -142,10 +146,17 @@ button:hover, .btn:hover {
         min-height: 100vh;
     }
 
-    .container, .dashboard-container, .admin-box {
-        padding: 20px; /*extra விளிம்புகளைக் குறைத்து போன் திரைக்குள் அடக்குகிறது */
+    .container, .dashboard-container {
+        padding: 20px; /* extra விளிம்புகளைக் குறைத்து போன் திரைக்குள் அடக்குகிறது */
         border-radius: 10px;
         margin: 15px auto !important;
+    }
+    
+    /* 🚀 போன்களில் அட்மின் பாக்ஸ் மட்டும் 100% ஃபுல் ஸ்கிரீனாக மாறும் */
+    .admin-box {
+        width: 100% !important;
+        padding: 15px;
+        margin: 10px auto !important;
     }
 
     .navbar {
