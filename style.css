@@ -1,3 +1,7 @@
+/* ==========================================================================
+   🛡️ ATM SHIELD SECURITY FRAMEWORK - GLOBAL CENTERING RESETS
+   ========================================================================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -9,25 +13,45 @@ body {
     background: #0f172a; /* Cool Dark Theme */
     color: #ffffff;
     display: flex;
+    flex-direction: column; /* நேவிகேஷன் பார் மற்றும் கன்டெய்னரை வரிசையாக அடுக்க */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 20px;
 }
 
-.container {
+/* 🚀 FIX: உங்க பிராஜெக்ட்டில் உள்ள அனைத்து வகையான கன்டெய்னர்களையும் மையப்படுத்துகிறது */
+.container, .dashboard-container, .admin-box {
     background: #1e293b;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px; /* ஃபோன் மற்றும் டெஸ்க்டாப் இரண்டிற்கும் கச்சிதமான அளவு */
     text-align: center;
     border: 1px solid #38bdf8; /* Cyan Border Accent */
+    margin: 20px auto !important; /* பிரௌசரின் இருபுறமும் சமமான இடைவெளியை உறுதி செய்கிறது */
+    box-sizing: border-box;
+}
+
+/* அட்மின் பாக்ஸ் மட்டும் கொஞ்சம் பெரிய திரைகளுக்கு விரிவடைய அனுமதி */
+.admin-box {
+    max-width: 950px !important;
 }
 
 h2, h3 {
     margin-bottom: 20px;
     color: #38bdf8;
+}
+
+/* படிவங்களை மையப்படுத்தவும், அதன் அகலத்தைக் கட்டுப்படுத்தவும் */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
 }
 
 input[type="text"], input[type="password"], input[type="number"] {
@@ -39,9 +63,10 @@ input[type="text"], input[type="password"], input[type="number"] {
     color: #fff;
     border-radius: 6px;
     font-size: 16px;
+    text-align: center; /* இன்புட் டெக்ஸ்ட்களை மையப்படுத்துகிறது */
 }
 
-button {
+button, .btn {
     width: 100%;
     padding: 12px;
     background: #0ea5e9;
@@ -52,9 +77,11 @@ button {
     border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;
+    margin: 10px 0;
+    text-align: center;
 }
 
-button:hover {
+button:hover, .btn:hover {
     background: #2563eb;
 }
 
@@ -64,6 +91,7 @@ button:hover {
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 15px;
+    width: 100%;
 }
 
 .alert-success {
@@ -72,30 +100,79 @@ button:hover {
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 15px;
+    width: 100%;
 }
 
 /* ==========================================================================
-   📱 MOBILE RESPONSIVE ENGINE (Adds seamless layout scaling for small screens)
+   🌐 NAVBAR RESPONSIVE SETTINGS (டேஷ்போர்டு மேல் பகுதி சீரமைப்பு)
+   ========================================================================== */
+.navbar {
+    width: 100%;
+    max-width: 500px;
+    background: #1e293b;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    margin: 0 auto 10px auto;
+    box-sizing: border-box;
+    border-bottom: 2px solid #38bdf8;
+}
+
+.navbar form {
+    width: auto !important;
+    margin: 0 !important;
+}
+
+.navbar button, .navbar .btn-logout {
+    width: auto !important;
+    padding: 8px 16px;
+    margin: 0 !important;
+}
+
+/* ==========================================================================
+   📱 MOBILE RESPONSIVE ENGINE (போன்களில் கச்சிதமாகத் தெரிய)
    ========================================================================== */
 @media screen and (max-width: 480px) {
     body {
-        padding: 15px;
-        align-items: flex-start; /* Prevents long layout screens getting cut off at the top on small displays */
-        padding-top: 30px;
+        padding: 10px;
+        justify-content: flex-start; /* போன்களில் ஸ்க்ரோல் செய்ய ஏதுவாக மேலிருந்து ஆரம்பிக்கும் */
+        min-height: 100vh;
     }
 
-    .container {
-        padding: 20px; /* Reduces extra margins to fit mobile edges properly */
+    .container, .dashboard-container, .admin-box {
+        padding: 20px; /*extra விளிம்புகளைக் குறைத்து போன் திரைக்குள் அடக்குகிறது */
         border-radius: 10px;
+        margin: 15px auto !important;
+    }
+
+    .navbar {
+        max-width: 100%;
+        border-radius: 6px;
+        padding: 12px 15px;
+    }
+
+    .navbar h2 {
+        font-size: 16px !important;
     }
 
     input[type="text"], input[type="password"], input[type="number"] {
-        padding: 14px; /* Increases tap target sizes slightly for mobile thumbs */
-        font-size: 16px !important; /* Prevents auto-zoom scaling issues on mobile Safari browsers */
+        padding: 14px; 
+        font-size: 16px !important; /* போன் பிரௌசர்களில் ஆட்டோ-ஜூம் எர்ரரைத் தடுக்கும் */
     }
 
-    button {
+    button, .btn {
         padding: 14px;
         font-size: 16px;
+    }
+
+    /* 🚀 அட்மின் டேபிள்கள் போன்களில் பிதுங்காமல் இருக்க ஸ்க்ரோல் வசதி */
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 }
