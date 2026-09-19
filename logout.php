@@ -1,6 +1,6 @@
 <?php
-// Initialize database connection parameters and fetch active sessions
-include 'config.php';
+// 🛠️ நமது புதிய config.php-ஐ இணைக்கிறோம் (அதில் ஏற்கனவே ob_start மற்றும் session_start உள்ளது)
+require_once 'config.php';
 
 // 1. Clear all session variables stored in memory
 $_SESSION = array();
