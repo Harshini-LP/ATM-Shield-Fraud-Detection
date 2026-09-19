@@ -5,7 +5,7 @@ session_start();
 $servername = "localhost";
 $username   = "root";
 $password   = "";
-$dbname     = "atm_db";
+$dbname     = "atm_fraud";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
