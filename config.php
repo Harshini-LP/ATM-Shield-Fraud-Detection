@@ -1,4 +1,6 @@
 <?php
+ob_start(); // 🚀 FIXES THE "HEADERS ALREADY SENT" WARNING IMMEDIATELY
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -56,5 +58,4 @@ if (mysqli_num_rows($check_user) == 0) {
     mysqli_stmt_execute($init_stmt);
     mysqli_stmt_close($init_stmt);
 }
-?>
-
+// Note: We removed the closing ?> tag to safely prevent any whitespace leaks!
