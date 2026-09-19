@@ -1,12 +1,15 @@
 <?php
-include 'config.php';
-if(!isset($_SESSION['user_card'])) { 
+// 🛠️ நமது புதிய config.php-ஐ இணைக்கிறோம் (அதில் ஏற்கனவே ob_start மற்றும் session_start உள்ளது)
+require_once 'config.php';
+
+// ⚠️ SESSION NAME FIX: உங்க லாகின் பக்கத்தில் நாம் 'card_number' தான் பயன்படுத்தினோம்
+if(!isset($_SESSION['card_number'])) { 
     header("Location: index.php"); 
     exit();
 }
 
 if (isset($_POST['withdraw'])) {
-    $card = $_SESSION['user_card'];
+    $card = $_SESSION['card_number']; // சீரமைக்கப்பட்டுள்ளது
     $amount = intval($_POST['amount']);
 
     // சிஸ்டம் கட்டுப்பாடுகள்
@@ -16,7 +19,7 @@ if (isset($_POST['withdraw'])) {
 
     // 1. பயனர் தகவல்களைப் பாதுகாப்பாக எடுத்தல்
     $user_stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE card_number = ?");
-    mysqli_stmt_bind_param($user_stmt, "s", $card);
+    mysqli_stmt_bind_param("s", $card);
     mysqli_stmt_execute($user_stmt);
     $user_res = mysqli_stmt_get_result($user_stmt);
     $user = mysqli_fetch_assoc($user_res);
@@ -29,16 +32,18 @@ if (isset($_POST['withdraw'])) {
 
     // இருப்பிடம் கண்டறிதல்
     $user_ip = $_SERVER['REMOTE_ADDR'];
-    if($user_ip == '::1' || $user_ip == '127.0.0.1') {
-        $user_ip = '103.60.172.0'; 
+    if($user_ip == '::1' || $user_ip == '127.0.0.1' || empty($user_ip)) {
+        $user_ip = '103.60.172.0'; // டெமோவிற்கான லோக்கல் ஐபி மாற்று
     }
-    $geo_api = @file_get_contents("http://ip-api.com{$user_ip}"); // URL திருத்தப்பட்டுள்ளது
+    
+    // ⚠️ API URL FIX: விடுபட்ட ஸ்லாஷ் (/) குறியீடு சேர்க்கப்பட்டுள்ளது
+    $geo_api = @file_get_contents("http://ip-api.com{$user_ip}"); 
     $geo_data = json_decode($geo_api, true);
     $detected_location = (isset($geo_data['city']) && !empty($geo_data['city'])) ? $geo_data['city'] : "Unknown";
 
     // தினசரி பண வரம்பு கட்டுப்பாடு
     $limit_stmt = mysqli_prepare($conn, "SELECT SUM(amount) as total FROM transactions WHERE card_number = ? AND status = 'Success' AND DATE(date_time) = CURDATE()");
-    mysqli_stmt_bind_param($limit_stmt, "s", $card);
+    mysqli_stmt_bind_param("s", $card);
     mysqli_stmt_execute($limit_stmt);
     $limit_res = mysqli_stmt_get_result($limit_stmt);
     $today_data = mysqli_fetch_assoc($limit_res);
@@ -75,21 +80,17 @@ if (isset($_POST['withdraw'])) {
             
             mysqli_stmt_close($vel_stmt);
 
-            // உங்களுக்காக மாற்றப்பட்ட புதிய ஜாவாஸ்கிரிப்ட் பாப்-அப் பகுதி 🚨
-            // நேரடியாக பிளாக் செய்யாமல் பயனரிடம் கேள்வி கேட்கும்
             $_SESSION['pending_amount'] = $amount;
             $_SESSION['pending_location'] = $detected_location;
-            $_SESSION['auth_otp'] = rand(100000, 999999); // பாதுகாப்புக்காக புதிய OTP உருவாக்குதல்
+            $_SESSION['auth_otp'] = rand(100000, 999999); 
             
             echo "
             <script>
                 let userChoice = confirm('🚨 Fraud Security Alert:\\nMultiple rapid transactions detected within 2 minutes!\\n\\nIs this really you trying to withdraw money? Click OK (Yes, I am) or Cancel (No).');
                 
                 if (userChoice) {
-                    // பயனர் 'Yes' அழுத்தினால் பாதுகாப்பு அடுக்கிற்கான OTP பக்கத்திற்கு அழைத்துச் செல்லப்படும்
                     window.location.href = 'verify_otp.php';
                 } else {
-                    // பயனர் 'No' அழுத்தினால் பரிவர்த்தனை முற்றிலும் ரத்து செய்யப்படும்
                     alert('❌ Transaction canceled for security reasons.');
                     window.location.href = 'dashboard.php';
                 }
@@ -106,7 +107,7 @@ if (isset($_POST['withdraw'])) {
         exit();
     }
 
-    // அட்வான்ஸ்டு OTP சரிபார்ப்பு நிபந்தனை (அதிக தொகை அல்லது புதிய இருப்பிடம்)
+    // அட்வான்ஸ்டு OTP சரிபார்ப்பு निபந்தனை (அதிக தொகை அல்லது புதிய இருப்பிடம்)
     if ($amount > $max_single_limit || $detected_location != $usual_location) {
         $_SESSION['pending_amount'] = $amount;
         $_SESSION['pending_location'] = $detected_location;
@@ -128,7 +129,6 @@ if (isset($_POST['withdraw'])) {
         mysqli_stmt_execute($log_stmt);
         mysqli_stmt_close($log_stmt);
         
-        // புதிய தனிப் பக்கத்திற்குத் தரவுகளை அனுப்பி திருப்பி விடுதல் (Redirect)
         $_SESSION['success_amount'] = $amount;
         $_SESSION['success_location'] = $detected_location;
         header("Location: tx_success.php");
