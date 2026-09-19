@@ -67,43 +67,36 @@ if (isset($_POST['logout_btn'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATM Shield - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; }
-        .navbar { background: #1a365d; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h2 { margin: 0; font-size: 20px; }
-        .dashboard-container { max-width: 500px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
-        .user-info { background: #e2e8f0; padding: 12px; border-radius: 6px; font-weight: 500; margin-bottom: 25px; }
-        .btn { padding: 12px 20px; font-size: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px; transition: 0.2s; }
-        .btn-balance { background: #2f855a; color: white; width: 80%; }
-        .btn-balance:hover { background: #22543d; }
-        .btn-verify { background: #3182ce; color: white; width: 90%; margin-top: 10px; }
-        .btn-verify:hover { background: #2b6cb0; }
-        .btn-logout { background: #e53e3e; color: white; }
-        .btn-logout:hover { background: #c53030; }
-        input[type="password"], input[type="number"] { width: 85%; padding: 12px; margin: 12px 0; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 15px; text-align: center; }
-        .alert-error { color: #9b2c2c; background: #fff5f5; border: 1px solid #feb2b2; padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 14px; }
-        .alert-success { color: #22543d; background: #f0fff4; border: 1px solid #9ae6b4; padding: 18px; border-radius: 8px; font-size: 20px; font-weight: bold; margin-top: 20px; }
-        .sec-card { background: #f7fafc; border: 1px dashed #a0aec0; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .withdraw-box { margin-top: 35px; padding-top: 25px; border-top: 2px dashed #cbd5e0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .navbar { width: 100%; max-width: 500px; background: #1e293b; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; margin: 0 auto 20px auto; box-sizing: border-box; border-bottom: 2px solid #38bdf8; }
+        .navbar form { width: auto !important; margin: 0 !important; }
+        .dashboard-container { width: 100%; max-width: 500px; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); text-align: center; color: #fff; box-sizing: border-box; margin: 0 auto !important; border: 1px solid #334155; }
+        .user-info { background: #0f172a; padding: 12px; border-radius: 6px; font-weight: 500; margin-bottom: 25px; border: 1px solid #334155; }
+        .btn { padding: 12px 20px; font-size: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px auto; transition: 0.2s; display: block; width: 90%; }
+        .btn-balance { background: #16a34a; color: white; }
+        .btn-balance:hover { background: #15803d; }
+        .btn-verify { background: #38bdf8; color: #0f172a; }
+        .btn-verify:hover { background: #0ea5e9; }
+        .btn-logout { background: #ef4444; color: white; padding: 8px 16px; width: auto; margin: 0; }
+        .btn-logout:hover { background: #dc2626; }
+        input[type="password"], input[type="number"] { width: 90%; padding: 12px; margin: 12px auto; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; font-size: 15px; text-align: center; display: block; box-sizing: border-box; }
+        .alert-error { color: #f87171; background: #451a03; border: 1px solid #7f1d1d; padding: 10px; border-radius: 6px; margin: 10px auto; font-size: 14px; width: 90%; box-sizing: border-box; }
+        .alert-success { color: #4ade80; background: #064e3b; border: 1px solid #059669; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 20px; width: 90%; margin-left: auto; margin-right: auto; box-sizing: border-box; }
+        .sec-card { background: #0f172a; border: 1px dashed #38bdf8; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .withdraw-box { margin-top: 35px; padding-top: 25px; border-top: 2px dashed #334155; }
         
-        /* ⚠️ பதாகை படத்திற்கான புதிய ஸ்டைல்ஸ் (Banner Responsive Styling) */
-        .dashboard-banner {
-            width: 100%;
-            height: auto;
-            max-height: 180px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #cbd5e0;
-        }
+        /* Vector Banner Properties */
+        .vector-banner-wrapper { width: 100%; height: 140px; background: #0f172a; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; border: 1px solid #334155; overflow: hidden; }
     </style>
 </head>
 <body>
 
     <!-- Header Navbar -->
     <div class="navbar">
-        <h2>🛡️ ATM Shield Fraud Detection</h2>
-        <form method="POST" style="margin: 0;">
+        <h2 style="font-size: 18px; color: #38bdf8; margin: 0;">🛡️ ATM Shield</h2>
+        <form method="POST">
             <button type="submit" name="logout_btn" class="btn btn-logout">Logout</button>
         </form>
     </div>
@@ -111,10 +104,35 @@ if (isset($_POST['logout_btn'])) {
     <!-- Main Dashboard Container -->
     <div class="dashboard-container">
         
-        <!-- 📸 ====================================================
-             🔥 FIXED: இணையத்தில் இருந்து நேரடியாக லோட் ஆகும் லைவ் பேனர் இமேஜ் லிங்க்
-             ==================================================== -->
-        <img src="https://unsplash.com" alt="ATM Shield Monitoring Live Network" class="dashboard-banner" />
+        <!-- ⚡ FIXED: Native Inline High-Tech Vector Grid Banner Asset -->
+        <div class="vector-banner-wrapper">
+            <svg width="100%" height="100%" viewBox="0 0 400 120" xmlns="http://w3.org">
+                <defs>
+                    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.8"/>
+                        <stop offset="100%" stop-color="#4facfe" stop-opacity="0.2"/>
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="#0f172a"/>
+                <g stroke="#1e293b" stroke-width="1">
+                    <line x1="0" y1="20" x2="400" y2="20" />
+                    <line x1="0" y1="40" x2="400" y2="40" />
+                    <line x1="0" y1="60" x2="400" y2="60" />
+                    <line x1="0" y1="80" x2="400" y2="80" />
+                    <line x1="0" y1="100" x2="400" y2="100" />
+                    <line x1="50" y1="0" x2="50" y2="120" />
+                    <line x1="100" y1="0" x2="100" y2="120" />
+                    <line x1="150" y1="0" x2="150" y2="120" />
+                    <line x1="200" y1="0" x2="200" y2="120" />
+                    <line x1="250" y1="0" x2="250" y2="120" />
+                    <line x1="300" y1="0" x2="300" y2="120" />
+                    <line x1="350" y1="0" x2="350" y2="120" />
+                </g>
+                <path d="M200,25 L250,45 L250,75 C250,95 200,105 200,105 C200,105 150,95 150,75 L150,45 Z" fill="url(#shieldGrad)" stroke="#38bdf8" stroke-width="2"/>
+                <path d="M185,65 L195,75 L220,50" fill="none" stroke="#00f2fe" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="200" y="116" fill="#38bdf8" font-family="sans-serif" font-size="10" text-anchor="middle" letter-spacing="1">LIVE ANOMALY SECURE NETWORK</text>
+            </svg>
+        </div>
 
         <h2>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h2>
         
@@ -122,7 +140,6 @@ if (isset($_POST['logout_btn'])) {
             💳 Card Number: <b><?php echo htmlspecialchars($card_number); ?></b>
         </div>
 
-        <!-- withdraw.php-ல் இருந்து வரும் பண வரம்பு எர்ரர் மெசேஜ்களைக் காட்டும் பகுதி -->
         <?php if (isset($_SESSION['error_msg'])): ?>
             <div class="alert-error">
                 <?php echo $_SESSION['error_msg']; unset($_SESSION['error_msg']); ?>
@@ -138,7 +155,7 @@ if (isset($_POST['logout_btn'])) {
         <?php if ($show_balance_prompt && empty($balance_display)): ?>
             <div class="sec-card">
                 <h3>🔒 Security Check</h3>
-                <p style="color: #4a5568; font-size: 14px;">Enter your Balance Password to view details:</p>
+                <p style="color: #94a3b8; font-size: 14px;">Enter your Balance Password to view details:</p>
 
                 <?php if (!empty($balance_error)): ?>
                     <div class="alert-error"><?php echo $balance_error; ?></div>
@@ -162,10 +179,10 @@ if (isset($_POST['logout_btn'])) {
         <div class="withdraw-box">
             <form method="POST" action="withdraw.php">
                 <h3>💰 Cash Withdrawal Suite</h3>
-                <p style="color: #718096; font-size: 13px; margin: 0 0 10px 0;">Velocity tracking & IP geocoding will evaluate threats dynamically.</p>
+                <p style="color: #94a3b8; font-size: 13px; margin: 0 0 10px 0;">Velocity tracking & IP geocoding will evaluate threats dynamically.</p>
                 
                 <input type="number" name="amount" placeholder="Enter Amount to Withdraw (₹)" min="100" required><br>
-                <button type="submit" name="withdraw" class="btn btn-verify" style="width: 90%; background: #1a365d;">Confirm & Dispense Cash</button>
+                <button type="submit" name="withdraw" class="btn btn-verify">Confirm & Dispense Cash</button>
             </form>
         </div>
 
