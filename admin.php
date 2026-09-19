@@ -67,16 +67,41 @@ if (isset($_POST['delete_and_report'])) {
  
     <title>ATM Shield Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 🚀 OVERRIDE FIX: style.css-ல் உள்ள ஃபிலெக்ஸ் முரண்பாடுகளை அட்மின் பக்கத்தில் மட்டும் நீக்குகிறது */
+        body {
+            display: block !important; /* லேயர்களைப் பக்கவாட்டில் மோதவிடாமல் தனித்தனி வரிகளாகப் பிரிக்கிறது */
+            padding: 20px !important;
+            background-color: #0f172a !important;
+        }
+        .admin-header-bar {
+            width: 100%;
+            max-width: 1100px;
+            margin: 10px auto 25px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            clear: both;
+        }
+        .admin-box {
+            display: block !important;
+            width: 100% !important;
+            max-width: 1100px !important;
+            margin: 0 auto !important;
+            clear: both;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- 🚀 FIXED MATRIX WRAPPER: லேப்டாப் திரைகளில் பாக்ஸுடன் கச்சிதமாகப் பொருந்தும் மேல் பகுதி லேயர் -->
-    <div style="width: 100%; max-width: 1100px; margin: 25px auto 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; box-sizing: border-box;">
+    <!-- 🚀 FIXED HEADER BAR LAYER -->
+    <div class="admin-header-bar">
         <h2 style="color: #ef4444; margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 0.5px;">🛡️ ATM Shield Security Command Center</h2>
-        <a href="logout.php" style="background: #ef4444; color: white; padding: 10px 22px; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); transition: 0.2s;">🚪 Admin Logout</a>
+        <a href="logout.php" style="background: #ef4444; color: white; padding: 10px 22px; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); transition: 0.2s; display: inline-block;">🚪 Admin Logout</a>
     </div>
 
-    <!-- 🚀 ADMIN CONTAINER SHEET -->
+    <!-- 🚀 FIXED CONTENT LEDGER CANVAS -->
     <div class="admin-box">
         <h3 style="color: #ef4444; margin-top: 0; text-align: left;">🚩 Live Fraud Threat Transaction Logs</h3>
         <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px; text-align: left;">Real-Time Suspicious Activities Transaction Log Tracking</p>
