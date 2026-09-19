@@ -80,10 +80,12 @@ if (isset($_POST['logout_btn'])) {
         .btn-verify:hover { background: #2b6cb0; }
         .btn-logout { background: #e53e3e; color: white; }
         .btn-logout:hover { background: #c53030; }
-        input[type="password"] { width: 85%; padding: 12px; margin: 12px 0; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 15px; }
+        /* ⚠️ வித்ரா பாக்ஸிற்கு தேவையான புதிய ஸ்டைல்ஸ் */
+        input[type="password"], input[type="number"] { width: 85%; padding: 12px; margin: 12px 0; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 15px; text-align: center; }
         .alert-error { color: #9b2c2c; background: #fff5f5; border: 1px solid #feb2b2; padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 14px; }
         .alert-success { color: #22543d; background: #f0fff4; border: 1px solid #9ae6b4; padding: 18px; border-radius: 8px; font-size: 20px; font-weight: bold; margin-top: 20px; }
         .sec-card { background: #f7fafc; border: 1px dashed #a0aec0; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .withdraw-box { margin-top: 35px; padding-top: 25px; border-top: 2px dashed #cbd5e0; }
     </style>
 </head>
 <body>
@@ -101,8 +103,15 @@ if (isset($_POST['logout_btn'])) {
         <h2>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h2>
         
         <div class="user-info">
-            💳 Card Number: <b><?php echo htmlspecialchars($card_number); ?></b>
+            静态 💳 Card Number: <b><?php echo htmlspecialchars($card_number); ?></b>
         </div>
+
+        <!-- ⚠️ withdraw.php-ல் இருந்து வரும் பண வரம்பு எர்ரர் மெசேஜ்களைக் காட்டும் பகுதி -->
+        <?php if (isset($_SESSION['error_msg'])): ?>
+            <div class="alert-error">
+                <?php echo $_SESSION['error_msg']; unset($_SESSION['error_msg']); ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Main Services Menu -->
         <form method="POST">
@@ -132,6 +141,20 @@ if (isset($_POST['logout_btn'])) {
                 <?php echo $balance_display; ?>
             </div>
         <?php endif; ?>
+
+
+        <!-- ====================================================
+             🔥 NEW WITHDRAWAL FEATURE INTEGRATION
+             ==================================================== -->
+        <div class="withdraw-box">
+            <form method="POST" action="withdraw.php">
+                <h3>💰 Cash Withdrawal Suite</h3>
+                <p style="color: #718096; font-size: 13px; margin: 0 0 10px 0;">Velocity tracking & IP geocoding will evaluate threats dynamically.</p>
+                
+                <input type="number" name="amount" placeholder="Enter Amount to Withdraw (₹)" min="100" required><br>
+                <button type="submit" name="withdraw" class="btn btn-verify" style="width: 90%; background: #1a365d;">Confirm & Dispense Cash</button>
+            </form>
+        </div>
 
     </div>
 
