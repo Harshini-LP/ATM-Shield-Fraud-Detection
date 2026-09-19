@@ -91,33 +91,41 @@ if (isset($_POST['delete_and_report'])) {
             clear: both;
         }
         
-        /* 🚀 NEW BORDER GRID INFRASTRUCTURE: டேபிளுக்குத் தெளிவான பார்டர்கள் வழங்கும் புதிய ஸ்டைல்ஸ் */
+        /* 🚀 NEW RESPONSIVE TABLE WRAPPER LAYER: போன்களில் டேபிள் வெளியே பிதுங்குவதைத் தடுக்கும் ரகசிய அடுக்கு */
+        .table-responsive-wrapper {
+            width: 100% !important;
+            overflow-x: auto !important; /* போன் திரைகளில் ஸ்வைப்பிங் வசதியை ஆன் செய்கிறது */
+            margin-top: 15px !important;
+            margin-bottom: 25px !important;
+            border: 2px solid #334155 !important;
+            border-radius: 8px !important;
+            background: #0f172a !important;
+            -webkit-overflow-scrolling: touch; /* ஐபோன்களிலும் மென்மையாக ஸ்க்ரோல் செய்ய */
+        }
+        
         table {
             width: 100% !important;
             border-collapse: collapse !important;
-            margin-top: 20px !important;
-            background: #0f172a !important;
-            border: 2px solid #334155 !important; /* வெளிப்புற முதன்மை தடிமனான பார்டர் */
-            border-radius: 6px !important;
-            overflow: hidden !important;
+            margin-top: 0px !important; /* ராப்பர் கவனித்துக் கொள்ளும் */
+            min-width: 800px !important; /* ⚠️ போன்களில் தரவுகள் சுருங்கி உடையாமல் இருக்க குறைந்தபட்ச அகலத்தை லாக் செய்கிறது */
         }
         th, td {
             padding: 14px 12px !important;
-            text-align: center !important; /* அனைத்து விபரங்களையும் நடுப்பகுதியில் காட்டுகிறது */
-            border: 1px solid #334155 !important; /* உட்புறக் கட்டக் கோடுகள் (Table Borders) */
+            text-align: center !important;
+            border: 1px solid #334155 !important;
             font-size: 14px !important;
         }
         th {
-            background: #ef4444 !important; /* மோசடி கண்காணிப்புக்கான சிவப்பு தலைப்பு */
+            background: #ef4444 !important;
             color: white !important;
             font-weight: bold !important;
             border-bottom: 2px solid #475569 !important;
         }
         .locked-title th {
-            background: #3182ce !important; /* லாக் ஆன கணக்குகளுக்கான நீல நிற தலைப்பு */
+            background: #3182ce !important;
         }
         tr:hover {
-            background: #1e293b !important; /* மவுஸ் வைக்கும் போது மென்மையான பேக்ரவுண்ட் மாறும் */
+            background: #1e293b !important;
         }
         .badge {
             background: #ef4444;
@@ -152,6 +160,13 @@ if (isset($_POST['delete_and_report'])) {
             width: auto !important;
         }
         .btn-unlock:hover { background: #16a34a !important; }
+
+        /* போன்களுக்கான சிறிய விளிம்பு சரிசெய்தல் */
+        @media screen and (max-width: 480px) {
+            body { padding: 10px !important; }
+            .admin-header-bar { flex-direction: column !important; gap: 15px !important; text-align: center !important; }
+            .admin-header-bar h2 { font-size: 18px !important; }
+        }
     </style>
 </head>
 <body>
@@ -168,98 +183,102 @@ if (isset($_POST['delete_and_report'])) {
         <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px; text-align: left;">Real-Time Suspicious Activities Transaction Log Tracking</p>
         
         <!-- ====================================================
-             PANEL 1: FRAUD LOGS TRANSACTION TABLE
+             PANEL 1: FRAUD LOGS TRANSACTION TABLE WITH WRAPPER
              ==================================================== -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Card Number</th>
-                    <th>Requested Amount</th>
-                    <th>Location</th>
-                    <th>Security Status</th>
-                    <th>Date & Time</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $status_param = 'Flagged Fraud';
-                $log_stmt = mysqli_prepare($conn, "SELECT * FROM transactions WHERE status = ? ORDER BY id DESC");
-                mysqli_stmt_bind_param($log_stmt, "s", $status_param);
-                mysqli_stmt_execute($log_stmt);
-                $logs = mysqli_stmt_get_result($log_stmt);
+        <div class="table-responsive-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Card Number</th>
+                        <th>Requested Amount</th>
+                        <th>Location</th>
+                        <th>Security Status</th>
+                        <th>Date & Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $status_param = 'Flagged Fraud';
+                    $log_stmt = mysqli_prepare($conn, "SELECT * FROM transactions WHERE status = ? ORDER BY id DESC");
+                    mysqli_stmt_bind_param($log_stmt, "s", $status_param);
+                    $log_stmt->execute();
+                    $logs = $log_stmt->get_result();
 
-                if (mysqli_num_rows($logs) == 0) {
-                    echo "<tr><td colspan='6' style='text-align:center; color:#94a3b8; padding: 25px;'>No fraud alerts recorded yet. System secure.</td></tr>";
-                } else {
-                    while($row = mysqli_fetch_assoc($logs)) {
-                        echo "<tr>
-                            <td>" . htmlspecialchars($row['card_number']) . "</td>
-                            <td style='color:#ef4444; font-weight:bold;'>₹" . htmlspecialchars(number_format($row['amount'], 2)) . "</td>
-                            <td>" . htmlspecialchars($row['location']) . "</td>
-                            <td><span class='badge'>" . htmlspecialchars($row['status']) . "</span></td>
-                            <td style='color:#94a3b8;'>" . htmlspecialchars($row['date_time']) . "</td>
-                            <td>
-                                <form method='POST' style='margin:0; padding:0;' onsubmit='return confirm(\"Delete log and report to user?\");'>
-                                    <input type='hidden' name='transaction_id' value='" . htmlspecialchars($row['id']) . "'>
-                                    <input type='hidden' name='target_card_number' value='" . htmlspecialchars($row['card_number']) . "'>
-                                    <button type='submit' name='delete_and_report' class='btn-delete-report'>🗑️ Delete & Report</button>
-                                </form>
-                            </td>
-                        </tr>";
+                    if ($logs->num_rows == 0) {
+                        echo "<tr><td colspan='6' style='text-align:center; color:#94a3b8; padding: 25px;'>No fraud alerts recorded yet. System secure.</td></tr>";
+                    } else {
+                        while($row = $logs->fetch_assoc()) {
+                            echo "<tr>
+                                <td>" . htmlspecialchars($row['card_number']) . "</td>
+                                <td style='color:#ef4444; font-weight:bold;'>₹" . htmlspecialchars(number_format($row['amount'], 2)) . "</td>
+                                <td>" . htmlspecialchars($row['location']) . "</td>
+                                <td><span class='badge'>" . htmlspecialchars($row['status']) . "</span></td>
+                                <td style='color:#94a3b8;'>" . htmlspecialchars($row['date_time']) . "</td>
+                                <td>
+                                    <form method='POST' style='margin:0; padding:0;' onsubmit='return confirm(\"Delete log and report to user?\");'>
+                                        <input type='hidden' name='transaction_id' value='" . htmlspecialchars($row['id']) . "'>
+                                        <input type='hidden' name='target_card_number' value='" . htmlspecialchars($row['card_number']) . "'>
+                                        <button type='submit' name='delete_and_report' class='btn-delete-report'>🗑️ Delete & Report</button>
+                                    </form>
+                                </td>
+                            </tr>";
+                        }
                     }
-                }
-                mysqli_stmt_close($log_stmt);
-                ?>
-            </tbody>
-        </table>
+                    $log_stmt->close();
+                    ?>
+                </tbody>
+            </table>
+        </div>
 
-        <br><br><hr style="border: 0; border-top: 1px solid #334155;"><br>
+        <br><hr style="border: 0; border-top: 1px solid #334155;"><br>
 
         <!-- ====================================================
-             PANEL 2: LOCKED USER ACCOUNTS & MANAGEMENT
+             PANEL 2: LOCKED USER ACCOUNTS & MANAGEMENT WITH WRAPPER
              ==================================================== -->
         <h3 style="color: #38bdf8; text-align: left; margin-top: 20px;">🔒 Locked Accounts Management</h3>
-        <table>
-            <thead class="locked-title">
-                <tr>
-                    <th>Customer Name</th>
-                    <th>Card Number</th>
-                    <th>Account Balance</th>
-                    <th>Current Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $lock_param = 'Locked';
-                $locked_stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE card_status = ? ORDER BY id DESC");
-                mysqli_stmt_bind_param($locked_stmt, "s", $lock_param);
-                mysqli_stmt_execute($locked_stmt);
-                $locked_accounts = mysqli_stmt_get_result($locked_stmt);
+        <div class="table-responsive-wrapper">
+            <table>
+                <thead class="locked-title">
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Card Number</th>
+                        <th>Account Balance</th>
+                        <th>Current Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $lock_param = 'Locked';
+                    $locked_stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE card_status = ? ORDER BY id DESC");
+                    mysqli_stmt_bind_param($locked_stmt, "s", $lock_param);
+                    $locked_stmt->execute();
+                    $locked_accounts = $locked_stmt->get_result();
 
-                if (mysqli_num_rows($locked_accounts) == 0) {
-                    echo "<tr><td colspan='5' style='text-align:center; color:#94a3b8; padding: 25px;'>No customer accounts are currently locked. System running clear.</td></tr>";
-                } else {
-                    while($user_row = mysqli_fetch_assoc($locked_accounts)) {
-                        echo "<tr>
-                            <td>" . htmlspecialchars($user_row['username']) . "</td>
-                            <td>" . htmlspecialchars($user_row['card_number']) . "</td>
-                            <td>₹" . htmlspecialchars(number_format($user_row['balance'], 2)) . "</td>
-                            <td><span class='badge' style='background:#f59e0b;'>Locked</span></td>
-                            <td>
-                                <form method='POST' style='margin:0; padding:0;' onsubmit='return confirm(\"Are you sure you want to unlock this account?\");'>
-                                    <input type='hidden' name='target_card_number' value='" . htmlspecialchars($user_row['card_number']) . "'>
-                                    <button type='submit' name='unlock_account' class='btn-unlock'>🔓 Unlock Account</button>
-                                </form>
-                            </td>
-                        </tr>";
+                    if ($locked_accounts->num_rows == 0) {
+                        echo "<tr><td colspan='5' style='text-align:center; color:#94a3b8; padding: 25px;'>No customer accounts are currently locked. System running clear.</td></tr>";
+                    } else {
+                        while($user_row = $locked_accounts->fetch_assoc()) {
+                            echo "<tr>
+                                <td>" . htmlspecialchars($user_row['username']) . "</td>
+                                <td>" . htmlspecialchars($user_row['card_number']) . "</td>
+                                <td>₹" . htmlspecialchars(number_format($user_row['balance'], 2)) . "</td>
+                                <td><span class='badge' style='background:#f59e0b;'>Locked</span></td>
+                                <td>
+                                    <form method='POST' style='margin:0; padding:0;' onsubmit='return confirm(\"Are you sure you want to unlock this account?\");'>
+                                        <input type='hidden' name='target_card_number' value='" . htmlspecialchars($user_row['card_number']) . "'>
+                                        <button type='submit' name='unlock_account' class='btn-unlock'>🔓 Unlock Account</button>
+                                    </form>
+                                </td>
+                            </tr>";
+                        }
                     }
-                }
-                mysqli_stmt_close($locked_stmt);
-                ?>
-            </tbody>
-        </table>
+                    $locked_stmt->close();
+                    ?>
+                </tbody>
+            </table>
+        </div>
 
         <br><br>
         <div style="text-align: center; margin-top: 10px;">
