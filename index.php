@@ -50,32 +50,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 🔥 MOBILE RESPONSIVE SCALING ENGINE TRIGGER INTERFACES -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ 
     <title>ATM Shield - Cyber-Dark Auth Gate</title>
-    <!-- உங்க ஒரிஜினல் ஸ்டைல் ஷீட்டை இணைக்கிறோம் -->
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { max-width: 400px; width: 100%; text-align: center; background: #1e293b; color: #fff; padding: 30px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); box-sizing: border-box; }
+        input[type="text"], input[type="password"] { width: 90%; padding: 12px; margin: 10px auto; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; font-size: 15px; text-align: center; display: block; box-sizing: border-box; }
+        .btn-main { width: 90%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; font-weight: bold; cursor: pointer; margin: 12px auto; border-radius: 6px; display: block; font-size: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-main:hover { background: #0ea5e9; }
+        .alert-error { color: #f87171; background: #451a03; border: 1px solid #7f1d1d; padding: 10px; margin-bottom: 15px; border-radius: 6px; font-size: 14px; width: 90%; margin-left: auto; margin-right: auto; box-sizing: border-box; }
+        .vector-badge { width: 100%; height: 90px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; }
+        .action-link { display: block; padding: 10px; margin: 8px auto; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 6px; width: 85%; border: 1px solid transparent; transition: 0.2s; text-align: center; }
+        .btn-register { color: #4ade80; border-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
+        .btn-register:hover { background: #16a34a; color: white; }
+        .btn-admin { color: #f87171; border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+        .btn-admin:hover { background: #dc2626; color: white; }
+    </style>
 </head>
 <body>
 
-<div class="container" style="max-width: 400px; margin: 80px auto; text-align: center; background: #111; color: #fff; padding: 30px; border-radius: 8px; border: 1px solid #00ffcc;">
-    <!-- உங்க பிராண்ட் லோகோ -->
-    <img src="logo.png" alt="ATM Shield Logo" style="max-width: 150px; margin-bottom: 20px;">
-    <h2>🛡️ ATM Shield Gate</h2>
-    <p style="color: #888;">Real-Time Fraud Detection Infrastructure</p>
+<div class="container">
+    <!-- ⚡ High-Tech Vector Shield Logo Asset -->
+    <div class="vector-badge">
+        <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://w3.org">
+            <path d="M50,10 L85,25 L85,55 C85,75 50,85 50,85 C50,85 15,75 15,55 L15,25 Z" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+            <path d="M38,48 L46,56 L64,36" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    
+    <h2 style="color: #38bdf8; margin: 0;">🛡️ ATM Shield Gate</h2>
+    <p style="color: #94a3b8; font-size: 13px; margin: 5px 0 20px 0;">Real-Time Fraud Detection Infrastructure</p>
 
     <?php if (!empty($login_error)): ?>
-        <div style="color: #ff3333; background: #221111; border: 1px solid #ff3333; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 14px;">
+        <div class="alert-error">
             <?php echo $login_error; ?>
         </div>
     <?php endif; ?>
 
+    <!-- LOGIN FORM -->
     <form method="POST" action="index.php">
-        <input type="text" name="card_number" placeholder="Enter 16-Digit Card Number" style="width: 90%; padding: 10px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff;" required><br>
-        <input type="password" name="pin" placeholder="Enter 4-Digit ATM PIN" style="width: 90%; padding: 10px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff;" required><br>
-        <button type="submit" name="login_submit" style="width: 95%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px;">AUTHENTICATE CARD</button>
+        <input type="text" name="card_number" placeholder="Enter 16-Digit Card Number" required>
+        <input type="password" name="pin" placeholder="Enter 4-Digit ATM PIN" required>
+        <button type="submit" name="login_submit" class="btn-main">AUTHENTICATE CARD</button>
     </form>
     
-    <p style="font-size: 12px; color: #555; margin-top: 20px;">Default Demo Card: 4000 1234 5678 8742 | PIN: 1234</p>
+    <!-- ====================================================
+         🔥 NEW ADDITION: MISSING SYSTEM NAVIGATION ACTIONS
+         ==================================================== -->
+    <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #334155;">
+        <a href="register.php" class="action-link btn-register">📝 Create New Account</a>
+        <a href="admin_login.php" class="action-link btn-admin">⚙️ Access Admin Security Gate</a>
+    </div>
+    
+    <p style="font-size: 11px; color: #475569; margin-top: 20px; margin-bottom: 0;">Demo Asset: 4000 1234 5678 8742 | PIN: 1234</p>
 </div>
 
 </body>
