@@ -1,5 +1,6 @@
 <?php 
-include 'config.php'; 
+// 🛠️ நமது புதிய config.php-ஐ இணைக்கிறோம் (அதில் ஏற்கனவே ob_start மற்றும் session_start உள்ளது)
+require_once 'config.php'; 
 
 // ----------------------------------------------------
 // Security Session Guard Check
@@ -15,7 +16,6 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 if (isset($_POST['unlock_account'])) {
     $target_card = trim($_POST['target_card_number']);
 
-    // 1. FIX: Changed status to card_status to match your database schema
     $status_active = 'Active';
     $unlock_stmt = mysqli_prepare($conn, "UPDATE users SET card_status = ? WHERE card_number = ?");
     mysqli_stmt_bind_param($unlock_stmt, "ss", $status_active, $target_card);
@@ -23,7 +23,7 @@ if (isset($_POST['unlock_account'])) {
     mysqli_stmt_close($unlock_stmt);
 
     if ($unlock_success) {
-        // 2. Clear out the bad login tracking counter parameters
+        // Clear out the bad login tracking counter parameters
         $clear_stmt = mysqli_prepare($conn, "DELETE FROM login_attempts WHERE card_number = ?");
         mysqli_stmt_bind_param($clear_stmt, "s", $target_card);
         mysqli_stmt_execute($clear_stmt);
@@ -69,7 +69,7 @@ if (isset($_POST['delete_and_report'])) {
     <title>ATM Shield Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Admin specific custom style rules */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; }
         .admin-box {
             max-width: 950px;
             width: 95%;
@@ -78,7 +78,7 @@ if (isset($_POST['delete_and_report'])) {
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             border: 1px solid #ef4444; /* Red border for fraud monitoring alert */
-            margin-bottom: 30px;
+            margin: 30px auto;
         }
         table {
             width: 100%;
@@ -179,7 +179,6 @@ if (isset($_POST['delete_and_report'])) {
             </thead>
             <tbody>
                 <?php
-                // Safe Prepared Statement for tracking fraud events
                 $status_param = 'Flagged Fraud';
                 $log_stmt = mysqli_prepare($conn, "SELECT * FROM transactions WHERE status = ? ORDER BY id DESC");
                 mysqli_stmt_bind_param($log_stmt, "s", $status_param);
@@ -210,7 +209,6 @@ if (isset($_POST['delete_and_report'])) {
                 ?>
             </tbody>
         </table>
-
         <br><br><hr style="border: 0; border-top: 1px solid #334155;"><br>
 
         <!-- ====================================================
@@ -229,7 +227,6 @@ if (isset($_POST['delete_and_report'])) {
             </thead>
             <tbody>
                 <?php
-                // FIX: Changed status to card_status inside selection query statement on live panel
                 $lock_param = 'Locked';
                 $locked_stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE card_status = ? ORDER BY id DESC");
                 mysqli_stmt_bind_param($locked_stmt, "s", $lock_param);
@@ -244,7 +241,6 @@ if (isset($_POST['delete_and_report'])) {
                             <td>" . htmlspecialchars($user_row['username']) . "</td>
                             <td>" . htmlspecialchars($user_row['card_number']) . "</td>
                             <td>₹" . htmlspecialchars(number_format($user_row['balance'], 2)) . "</td>
-
                             <td><span class='badge' style='background:#f59e0b;'>Locked</span></td>
                             <td>
                                 <form method='POST' style='margin:0; padding:0;' onsubmit='return confirm(\"Are you sure you want to unlock this account?\");'>
