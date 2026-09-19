@@ -1,8 +1,9 @@
 <?php
-include 'config.php';
+// 🛠️ நமது புதிய config.php-ஐ இணைக்கிறோம் (அதில் ஏற்கனவே ob_start மற்றும் session_start உள்ளது)
+require_once 'config.php';
 
-// செஷன் அல்லது ரசீது தரவுகள் இல்லை என்றால் டேஷ்போர்டிற்குத் திருப்பி அனுப்பும்
-if(!isset($_SESSION['user_card']) || !isset($_SESSION['success_amount'])) { 
+// ⚠️ SESSION NAME FIX: உங்க லாகின் பக்கத்தில் நாம் 'card_number' தான் பயன்படுத்தினோம்
+if(!isset($_SESSION['card_number']) || !isset($_SESSION['success_amount'])) { 
     header("Location: dashboard.php"); 
     exit(); 
 }
@@ -17,6 +18,7 @@ if(!isset($_SESSION['user_card']) || !isset($_SESSION['success_amount'])) {
     <title>ATM Shield - Transaction Success</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; }
         .success-receipt-card {
             background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
             border-radius: 12px !important;
@@ -47,7 +49,7 @@ if(!isset($_SESSION['user_card']) || !isset($_SESSION['success_amount'])) {
     </style>
 </head>
 <body>
-    <div class="container" style="max-width: 500px;">
+    <div class="container" style="max-width: 500px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
         <div class="success-receipt-card">
             <div class="status-icon">✅</div>
             <div class="status-title">Transaction Success</div>
@@ -55,12 +57,12 @@ if(!isset($_SESSION['user_card']) || !isset($_SESSION['success_amount'])) {
                 Amount Dispensed: <b style="font-size:18px;">₹<?php echo number_format($_SESSION['success_amount'], 2); ?></b>
             </p>
             <p style="color:#c8e6c9 !important; font-size:13px !important; margin:5px 0 0 0 !important;">
-                Location: <?php echo htmlspecialchars($_SESSION['success_location']); ?>
+                Location: <?php echo htmlspecialchars($_SESSION['success_location'] ?? 'Unknown'); ?>
             </p>
         </div>
 
         <h2 style="color:#22c55e; text-align:center;">Please collect your cash safely! 💰</h2>
-        <p style="color:#94a3b8; text-align:center; font-size:14px; margin-bottom:20px;">
+        <p style="color:#4a5568; text-align:center; font-size:14px; margin-bottom:20px;">
             The requested funds have been successfully debited from your secure account ecosystem.
         </p>
         
