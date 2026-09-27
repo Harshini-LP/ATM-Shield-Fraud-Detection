@@ -87,8 +87,10 @@ if (isset($_POST['logout_btn'])) {
         .sec-card { background: #0f172a; border: 1px dashed #38bdf8; padding: 20px; border-radius: 8px; margin-top: 20px; }
         .withdraw-box { margin-top: 35px; padding-top: 25px; border-top: 2px dashed #334155; }
         
-        /* Vector Banner Properties */
-        .vector-banner-wrapper { width: 100%; height: 140px; background: #0f172a; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; border: 1px solid #334155; overflow: hidden; }
+    /* Image Banner Wrapper */
+.image-banner-wrapper { width: 100%; height: auto; border-radius: 8px; margin-bottom: 25px; overflow: hidden; border: 1px solid #38bdf8; }
+.image-banner-wrapper img { width: 100%; height: auto; display: block; object-fit: cover; }    
+
     </style>
 </head>
 <body>
