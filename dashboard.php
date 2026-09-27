@@ -178,9 +178,8 @@ if (isset($_POST['logout_btn'])) {
         <!-- Cash Withdrawal Suite -->
         <div class="withdraw-box">
             <form method="POST" action="withdraw.php">
-                <h3>💰 Cash Withdrawal Suite</h3>
-                <p style="color: #94a3b8; font-size: 13px; margin: 0 0 10px 0;">Velocity tracking & IP geocoding will evaluate threats dynamically.</p>
-                
+                <h3>💰 Cash Withdrawal </h3>
+
                 <input type="number" name="amount" placeholder="Enter Amount to Withdraw (₹)" min="100" required><br>
                 <button type="submit" name="withdraw" class="btn btn-verify">Confirm & Dispense Cash</button>
             </form>
