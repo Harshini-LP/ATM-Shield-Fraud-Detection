@@ -58,4 +58,3 @@ if (mysqli_num_rows($check_user) == 0) {
     mysqli_stmt_execute($init_stmt);
     mysqli_stmt_close($init_stmt);
 }
-// Note: We removed the closing ?> tag to safely prevent any whitespace leaks!
