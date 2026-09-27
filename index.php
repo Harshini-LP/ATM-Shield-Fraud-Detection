@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
     <!-- 🔥 MOBILE RESPONSIVE SCALING ENGINE TRIGGER INTERFACES -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
  
-    <title>ATM Shield - Cyber-Dark Auth Gate</title>
+    <title>ATM Shield - Cyber-Dark Gate</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
         </svg>
     </div>
     
-    <h2 style="color: #38bdf8; margin: 0;">🛡️ ATM Shield Gate</h2>
+    <h2 style="color: #38bdf8; margin: 0;">🛡️ ATM Shield </h2>
     <p style="color: #94a3b8; font-size: 13px; margin: 5px 0 20px 0;">Real-Time Fraud Detection Infrastructure</p>
 
     <?php if (!empty($login_error)): ?>
