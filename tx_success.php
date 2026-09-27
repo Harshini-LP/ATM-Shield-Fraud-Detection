@@ -18,7 +18,7 @@ if(!isset($_SESSION['card_number']) || !isset($_SESSION['success_amount'])) {
     <title>ATM Shield - Transaction Success</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; margin: 0; padding: 0; }
         .success-receipt-card {
             background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
             border-radius: 12px !important;
