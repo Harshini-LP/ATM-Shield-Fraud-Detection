@@ -133,4 +133,3 @@ if (isset($_POST['withdraw'])) {
         exit();
     }
 }
-// Leaving closing PHP tags out intentionally to prevent white space formatting injection crashes
