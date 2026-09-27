@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
     <form method="POST" action="index.php">
         <input type="text" name="card_number" placeholder="Enter 16-Digit Card Number" required>
         <input type="password" name="pin" placeholder="Enter 4-Digit ATM PIN" required>
-        <button type="submit" name="login_submit" class="btn-main">AUTHENTICATE CARD</button>
+        <button type="submit" name="login_submit" class="btn-main">SCAN CARD</button>
     </form>
     
     <!-- New Account Button Grid -->
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_submit'])) {
     
     <!-- 🤫 SECRET NAV LAYER: அட்மின் பட்டன் நீக்கப்பட்டு, சாதாரண வரியின் முற்றுப்புள்ளியாக ( . ) மாற்றப்பட்டுள்ளது -->
     <p style="font-size: 11px; color: #475569; margin-top: 25px; margin-bottom: 0;">
-        Demo Asset: 4000 1234 5678 8742 | PIN: 1234<a href="admin_login.php" class="secret-dot">.</a>
+        Welcome To My ATM Project<a href="admin_login.php" class="secret-dot">.</a>
     </p>
 </div>
 
