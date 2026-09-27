@@ -87,17 +87,16 @@ if (isset($_POST['logout_btn'])) {
         .sec-card { background: #0f172a; border: 1px dashed #38bdf8; padding: 20px; border-radius: 8px; margin-top: 20px; }
         .withdraw-box { margin-top: 35px; padding-top: 25px; border-top: 2px dashed #334155; }
         
-    /* Image Banner Wrapper */
-.image-banner-wrapper { width: 100%; height: auto; border-radius: 8px; margin-bottom: 25px; overflow: hidden; border: 1px solid #38bdf8; }
-.image-banner-wrapper img { width: 100%; height: auto; display: block; object-fit: cover; }    
-
+    /* Vector Banner Properties */
+.vector-banner-wrapper { width: 100%; height: 140px; background: #0f172a; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; border: 1px solid #334155; overflow: hidden; }
+   
     </style>
 </head>
 <body>
 
     <!-- Header Navbar -->
     <div class="navbar">
-        <h2 style="font-size: 18px; color: #38bdf8; margin: 0;">🛡️ ATM Shield</h2>
+        <h1 style="font-size: 18px; color: #38bdf8; margin: 0;">🛡️ ATM Shield</h1>
         <form method="POST">
             <button type="submit" name="logout_btn" class="btn btn-logout">Logout</button>
         </form>
@@ -132,7 +131,7 @@ if (isset($_POST['logout_btn'])) {
                 </g>
                 <path d="M200,25 L250,45 L250,75 C250,95 200,105 200,105 C200,105 150,95 150,75 L150,45 Z" fill="url(#shieldGrad)" stroke="#38bdf8" stroke-width="2"/>
                 <path d="M185,65 L195,75 L220,50" fill="none" stroke="#00f2fe" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <text x="200" y="116" fill="#38bdf8" font-family="sans-serif" font-size="10" text-anchor="middle" letter-spacing="1">LIVE ANOMALY SECURE NETWORK</text>
+                <text x="200" y="116" fill="#38bdf8" font-family="sans-serif" font-size="10" text-anchor="middle" letter-spacing="1">SECURE TRANSACTION MONITORING</text>
             </svg>
         </div>
 
@@ -183,7 +182,7 @@ if (isset($_POST['logout_btn'])) {
                 <h3>💰 Cash Withdrawal </h3>
 
                 <input type="number" name="amount" placeholder="Enter Amount to Withdraw (₹)" min="100" required><br>
-                <button type="submit" name="withdraw" class="btn btn-verify">Confirm & Dispense Cash</button>
+                <button type="submit" name="withdraw" class="btn btn-verify">PROCEED TO WITHDRAW</button>
             </form>
         </div>
 
